@@ -567,6 +567,199 @@
     transform: translateX(-50%) translateY(0);
   }
 
+  /* Fandom budget card */
+  .fandom-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 0.5px solid var(--border);
+    padding: 16px 22px;
+    margin-bottom: 12px;
+  }
+  .fandom-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .fandom-left { display: flex; flex-direction: column; gap: 2px; }
+  .fandom-label { font-size: 11px; letter-spacing: 0.6px; text-transform: uppercase; color: var(--text-hint); }
+  .fandom-amount {
+    font-family: var(--mono);
+    font-size: 28px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+    color: #9b4dca;
+    transition: color 0.3s;
+  }
+  .fandom-amount.warn1 { color: var(--warn1); }
+  .fandom-amount.warn2 { color: var(--warn2); }
+  .fandom-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+  .btn-fandom-set {
+    font-family: var(--sans);
+    font-size: 11px;
+    color: #9b4dca;
+    background: #f5eeff;
+    border: 0.5px solid rgba(155,77,202,0.3);
+    border-radius: 20px;
+    padding: 4px 11px;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .btn-fandom-set:hover { background: #ede0ff; }
+  .fandom-meta {
+    font-size: 11px;
+    color: var(--text-hint);
+    font-family: var(--mono);
+    text-align: right;
+  }
+  .fandom-bar-bg {
+    height: 4px;
+    background: #eeece8;
+    border-radius: 99px;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  .fandom-bar-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: #9b4dca;
+    transition: width 0.3s ease;
+  }
+  .fandom-bar-fill.warn1 { background: var(--warn1); }
+  .fandom-bar-fill.warn2 { background: var(--warn2); }
+  .fandom-numbers {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-hint);
+    font-family: var(--mono);
+  }
+  /* Fandom ledger (mini) */
+  .fandom-ledger {
+    margin-top: 10px;
+    border-top: 0.5px solid var(--border);
+    padding-top: 10px;
+  }
+  .fandom-ledger-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 0.5px solid var(--border);
+    animation: fadeIn 0.2s ease;
+  }
+  .fandom-ledger-row:last-child { border-bottom: none; }
+  .fandom-ledger-memo { flex: 1; font-size: 13px; color: var(--text-primary); }
+  .fandom-ledger-date { font-size: 11px; color: var(--text-hint); }
+  .fandom-ledger-amt { font-family: var(--mono); font-size: 13px; font-weight: 500; color: #9b4dca; flex-shrink: 0; }
+  .fandom-ledger-del { background: none; border: none; color: var(--text-hint); cursor: pointer; font-size: 15px; padding: 0; line-height: 1; }
+  .fandom-ledger-del:hover { color: var(--warn2); }
+  .fandom-ledger-empty { font-size: 12px; color: var(--text-hint); padding: 8px 0; text-align: center; }
+  /* Fandom input row */
+  .fandom-input-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+    align-items: center;
+  }
+  .fandom-input-amt {
+    font-family: var(--mono);
+    font-size: 14px;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--text-primary);
+    width: 110px;
+    padding: 4px 0;
+    border-bottom: 1.5px solid var(--border-med);
+  }
+  .fandom-input-amt::placeholder { color: var(--text-hint); font-size: 12px; }
+  .fandom-input-memo {
+    font-family: var(--sans);
+    font-size: 12px;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--text-primary);
+    flex: 1;
+    padding: 4px 0;
+    border-bottom: 1.5px solid var(--border-med);
+  }
+  .fandom-input-memo::placeholder { color: var(--text-hint); }
+  .btn-fandom-add {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 14px;
+    background: #9b4dca;
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: opacity 0.15s;
+  }
+  .btn-fandom-add:hover { opacity: 0.85; }
+  /* Fandom set modal */
+  .fandom-modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4); z-index: 300;
+    align-items: flex-end; justify-content: center;
+  }
+  .fandom-modal-overlay.open { display: flex; }
+  .fandom-modal {
+    background: var(--surface);
+    border-radius: 18px 18px 0 0;
+    width: 100%; max-width: 560px;
+    padding: 24px 20px 40px;
+  }
+  .fandom-modal-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .fandom-modal-sub { font-size: 12px; color: var(--text-hint); margin-bottom: 18px; }
+  .fandom-modal-close { float: right; background: none; border: none; font-size: 22px; color: var(--text-hint); cursor: pointer; margin-top: -4px; }
+  .fandom-set-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .fandom-set-label { font-size: 12px; color: var(--text-secondary); }
+  .fandom-set-input {
+    font-family: var(--mono);
+    font-size: 22px;
+    border: none;
+    border-bottom: 1.5px solid var(--border-med);
+    outline: none;
+    background: transparent;
+    color: var(--text-primary);
+    padding: 4px 0;
+    width: 100%;
+  }
+  .fandom-set-name-input {
+    font-family: var(--sans);
+    font-size: 14px;
+    border: none;
+    border-bottom: 1.5px solid var(--border-med);
+    outline: none;
+    background: transparent;
+    color: var(--text-primary);
+    padding: 4px 0;
+    width: 100%;
+  }
+  .btn-fandom-confirm {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    width: 100%;
+    padding: 11px;
+    background: #9b4dca;
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    margin-top: 4px;
+  }
+  .btn-fandom-confirm:hover { opacity: 0.85; }
+
   /* Link buttons */
   .link-btn {
     background: none;
@@ -653,6 +846,51 @@
 
   <!-- Carryover banner -->
   <div class="carryover-banner" id="carryoverBanner"></div>
+
+  <!-- Fandom budget card -->
+  <div class="fandom-card" id="fandomCard">
+    <div class="fandom-top">
+      <div class="fandom-left">
+        <div class="fandom-label" id="fandomLabel">덕질 예산</div>
+        <div class="fandom-amount" id="fandomRemaining">예산 미설정</div>
+      </div>
+      <div class="fandom-right">
+        <button class="btn-fandom-set" id="btnFandomSet">이번 달 예산 설정</button>
+        <div class="fandom-meta" id="fandomMeta"></div>
+      </div>
+    </div>
+    <div class="fandom-bar-bg" id="fandomBarWrap">
+      <div class="fandom-bar-fill" id="fandomBarFill" style="width:0%"></div>
+    </div>
+    <div class="fandom-numbers" id="fandomNumbers"></div>
+    <!-- Mini ledger -->
+    <div class="fandom-ledger">
+      <div class="fandom-input-row">
+        <input class="fandom-input-amt" type="number" id="fandomInputAmt" placeholder="금액">
+        <input class="fandom-input-memo" type="text" id="fandomInputMemo" placeholder="메모">
+        <button class="btn-fandom-add" id="btnFandomAdd">기록</button>
+      </div>
+      <div id="fandomLedgerBody"></div>
+    </div>
+  </div>
+
+  <!-- Fandom set modal -->
+  <div class="fandom-modal-overlay" id="fandomModalOverlay">
+    <div class="fandom-modal">
+      <button class="fandom-modal-close" id="fandomModalClose">×</button>
+      <div class="fandom-modal-title">덕질 예산 설정</div>
+      <div class="fandom-modal-sub">이번 달 일반 소비와 완전히 독립된 예산이에요</div>
+      <div class="fandom-set-row">
+        <div class="fandom-set-label">예산 이름 (예: 덕질, 최애, 굿즈)</div>
+        <input class="fandom-set-name-input" type="text" id="fandomNameInput" placeholder="덕질 예산" maxlength="12">
+      </div>
+      <div class="fandom-set-row">
+        <div class="fandom-set-label">이번 달 예산</div>
+        <input class="fandom-set-input" type="number" id="fandomBudgetInput" placeholder="0">
+      </div>
+      <button class="btn-fandom-confirm" id="btnFandomConfirm">저장</button>
+    </div>
+  </div>
 
   <!-- Budget hero -->
   <div class="budget-hero">
@@ -1237,6 +1475,153 @@ function initAsset() {
   refresh();
 }
 
+// ─── 덕질 예산 시스템 ───
+const KEY_FANDOM = 'bcs_fandom_v1';
+
+function defaultFandom() {
+  const now = new Date();
+  return {
+    month: now.getFullYear() * 100 + (now.getMonth() + 1),
+    name: '덕질 예산',
+    budget: 0,       // 0 = 미설정
+    entries: [],
+  };
+}
+
+function loadFandom() {
+  try {
+    const raw = localStorage.getItem(KEY_FANDOM);
+    if (!raw) return defaultFandom();
+    return JSON.parse(raw);
+  } catch(e) { return defaultFandom(); }
+}
+
+function saveFandom(f) {
+  localStorage.setItem(KEY_FANDOM, JSON.stringify(f));
+}
+
+function fandomUsed(f) {
+  return f.entries.reduce((s, e) => s + e.amount, 0);
+}
+
+function renderFandom(f) {
+  const used = fandomUsed(f);
+  const rem = f.budget - used;
+  const pct = f.budget > 0 ? Math.min(100, (used / f.budget) * 100) : 0;
+  const isSet = f.budget > 0;
+
+  // Label
+  document.getElementById('fandomLabel').textContent = f.name || '덕질 예산';
+
+  // Amount
+  const amtEl = document.getElementById('fandomRemaining');
+  amtEl.className = 'fandom-amount';
+  if (!isSet) {
+    amtEl.textContent = '예산 미설정';
+    amtEl.style.color = 'var(--text-hint)';
+  } else {
+    amtEl.style.color = '';
+    amtEl.textContent = (rem >= 0 ? '' : '-') + Math.abs(rem).toLocaleString('ko-KR') + '원';
+    if (rem < 0) amtEl.classList.add('warn2');
+    else if (pct > 75) amtEl.classList.add('warn1');
+  }
+
+  // Meta
+  document.getElementById('fandomMeta').textContent =
+    isSet ? `한도 ${f.budget.toLocaleString('ko-KR')}원` : '';
+
+  // Bar
+  const fill = document.getElementById('fandomBarFill');
+  fill.style.width = pct + '%';
+  fill.className = 'fandom-bar-fill' + (rem < 0 ? ' warn2' : pct > 75 ? ' warn1' : '');
+
+  // Numbers
+  document.getElementById('fandomNumbers').innerHTML = isSet
+    ? `<span>${used.toLocaleString('ko-KR')}원 사용</span><span>남은 선택 ${Math.max(0,rem).toLocaleString('ko-KR')}원</span>`
+    : '';
+
+  // Ledger
+  const body = document.getElementById('fandomLedgerBody');
+  body.innerHTML = '';
+  const sorted = [...f.entries].reverse();
+  if (sorted.length === 0) {
+    body.innerHTML = '<div class="fandom-ledger-empty">아직 기록이 없어요</div>';
+  } else {
+    sorted.forEach(e => {
+      const row = document.createElement('div');
+      row.className = 'fandom-ledger-row';
+      row.innerHTML = `
+        <div class="fandom-ledger-memo">${e.memo || '(메모 없음)'}</div>
+        <div class="fandom-ledger-date">${e.date}</div>
+        <div class="fandom-ledger-amt">-${e.amount.toLocaleString('ko-KR')}원</div>
+        <button class="fandom-ledger-del" data-eid="${e.id}">×</button>
+      `;
+      row.querySelector('.fandom-ledger-del').onclick = () => {
+        f.entries = f.entries.filter(x => x.id !== e.id);
+        saveFandom(f);
+        renderFandom(f);
+      };
+      body.appendChild(row);
+    });
+  }
+}
+
+function initFandom() {
+  const f = loadFandom();
+
+  renderFandom(f);
+
+  // 예산 설정 모달 열기
+  document.getElementById('btnFandomSet').onclick = () => {
+    document.getElementById('fandomNameInput').value = f.name || '';
+    document.getElementById('fandomBudgetInput').value = f.budget || '';
+    document.getElementById('fandomModalOverlay').classList.add('open');
+  };
+
+  // 모달 닫기
+  document.getElementById('fandomModalClose').onclick = () =>
+    document.getElementById('fandomModalOverlay').classList.remove('open');
+  document.getElementById('fandomModalOverlay').onclick = (e) => {
+    if (e.target === document.getElementById('fandomModalOverlay'))
+      document.getElementById('fandomModalOverlay').classList.remove('open');
+  };
+
+  // 예산 저장
+  document.getElementById('btnFandomConfirm').onclick = () => {
+    const name = document.getElementById('fandomNameInput').value.trim() || '덕질 예산';
+    const budget = parseInt(document.getElementById('fandomBudgetInput').value) || 0;
+    f.name = name;
+    f.budget = budget;
+    saveFandom(f);
+    renderFandom(f);
+    document.getElementById('fandomModalOverlay').classList.remove('open');
+    showToast(`${name} 예산이 설정됐어요`);
+  };
+
+  // 기록 추가
+  document.getElementById('btnFandomAdd').onclick = () => {
+    const amtRaw = parseFloat(document.getElementById('fandomInputAmt').value);
+    if (!amtRaw || amtRaw <= 0) { showToast('금액을 입력해주세요'); return; }
+    const memo = document.getElementById('fandomInputMemo').value.trim();
+    const now = new Date();
+    f.entries.push({
+      id: Date.now().toString(),
+      amount: Math.round(amtRaw),
+      memo,
+      date: `${now.getMonth()+1}/${now.getDate()}`,
+    });
+    saveFandom(f);
+    document.getElementById('fandomInputAmt').value = '';
+    document.getElementById('fandomInputMemo').value = '';
+    renderFandom(f);
+  };
+
+  // 메모 필드 엔터키
+  document.getElementById('fandomInputMemo').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('btnFandomAdd').click();
+  });
+}
+
 // ─── JSON 내보내기 / 불러오기 ───
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -1255,6 +1640,7 @@ function initBackup() {
       version: 2,
       state: loadState(),
       assets: loadAssets(),
+      fandom: loadFandom(),
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -1283,6 +1669,7 @@ function initBackup() {
         if (!confirm('현재 데이터를 백업 파일로 덮어씁니다.\n계속하시겠어요?')) return;
         saveState(data.state);
         saveAssets(data.assets);
+        if (data.fandom) saveFandom(data.fandom);
         // 앱 전체 재초기화
         location.reload();
       } catch(err) {
@@ -1304,6 +1691,7 @@ function init() {
   initReset(state);
   initCatEdit(state);
   initAsset();
+  initFandom();
   initBackup();
 }
 
