@@ -876,6 +876,193 @@
     gap: 6px;
   }
 
+  /* ── 정기지출 카드 ── */
+  .recur-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 0.5px solid var(--border);
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .recur-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+  }
+  .recur-header-left { display: flex; flex-direction: column; gap: 2px; }
+  .recur-label {
+    font-size: 11px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--text-hint);
+  }
+  .recur-total {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+  .recur-header-right { display: flex; align-items: center; gap: 10px; }
+
+  /* 차감 토글 */
+  .recur-toggle-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .recur-toggle-label { font-size: 11px; color: var(--text-secondary); }
+  .toggle-switch {
+    position: relative;
+    width: 36px; height: 20px;
+    flex-shrink: 0;
+  }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: #d4d0c8;
+    border-radius: 99px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .toggle-slider::before {
+    content: '';
+    position: absolute;
+    width: 14px; height: 14px;
+    left: 3px; top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s;
+  }
+  .toggle-switch input:checked + .toggle-slider { background: #2d6a4f; }
+  .toggle-switch input:checked + .toggle-slider::before { transform: translateX(16px); }
+
+  .btn-recur-edit {
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--text-hint);
+    background: none;
+    border: 0.5px solid var(--border-med);
+    border-radius: 20px;
+    padding: 4px 11px;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .btn-recur-edit:hover { background: #f0ede6; }
+
+  /* 차감 배지 */
+  .recur-deduct-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .recur-deduct-badge.on  { background: #e8f5ee; color: #2d6a4f; }
+  .recur-deduct-badge.off { background: #f0ede6; color: var(--text-hint); }
+
+  /* 항목 목록 */
+  .recur-list {
+    border-top: 0.5px solid var(--border);
+  }
+  .recur-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 18px;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .recur-item:last-child { border-bottom: none; }
+  .recur-item-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #9b8ecf;
+    flex-shrink: 0;
+  }
+  .recur-item-name { flex: 1; font-size: 13px; color: var(--text-primary); }
+  .recur-item-cycle { font-size: 11px; color: var(--text-hint); }
+  .recur-item-amt {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+  .recur-empty {
+    padding: 18px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-hint);
+    border-top: 0.5px solid var(--border);
+  }
+
+  /* 정기지출 편집 모달 */
+  .recur-modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4); z-index: 300;
+    align-items: flex-end; justify-content: center;
+  }
+  .recur-modal-overlay.open { display: flex; }
+  .recur-modal {
+    background: var(--surface);
+    border-radius: 18px 18px 0 0;
+    width: 100%; max-width: 560px;
+    max-height: 85vh; overflow-y: auto;
+    padding: 0 0 40px;
+  }
+  .recur-modal-handle {
+    width: 36px; height: 4px;
+    background: var(--border-med);
+    border-radius: 99px;
+    margin: 12px auto 8px;
+  }
+  .recur-modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 20px 16px;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .recur-modal-title { font-size: 15px; font-weight: 600; }
+  .recur-modal-close { background: none; border: none; font-size: 22px; color: var(--text-hint); cursor: pointer; line-height: 1; }
+  .recur-edit-list { padding: 12px 20px 0; }
+  .recur-edit-row {
+    display: flex; gap: 8px; align-items: center;
+    margin-bottom: 10px;
+  }
+  .recur-edit-row input {
+    font-family: var(--sans); font-size: 13px;
+    border: 0.5px solid var(--border-med);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px; outline: none;
+    background: var(--bg); color: var(--text-primary);
+  }
+  .recur-edit-name { flex: 1; }
+  .recur-edit-amt  { width: 110px; font-family: var(--mono) !important; }
+  .recur-edit-cycle {
+    font-family: var(--sans); font-size: 12px;
+    border: 0.5px solid var(--border-med);
+    border-radius: var(--radius-sm);
+    padding: 8px 8px; outline: none;
+    background: var(--bg); color: var(--text-primary);
+    width: 72px; cursor: pointer;
+  }
+  .recur-edit-del { background: none; border: none; color: var(--text-hint); font-size: 18px; cursor: pointer; padding: 0; line-height: 1; }
+  .recur-edit-del:hover { color: var(--warn2); }
+  .btn-add-recur {
+    font-family: var(--sans); font-size: 12px; color: #7c5cbf;
+    background: none; border: 0.5px dashed #7c5cbf;
+    border-radius: var(--radius-sm); padding: 7px 14px;
+    cursor: pointer; margin: 8px 20px 0; width: calc(100% - 40px);
+    display: block;
+  }
+  .btn-save-recur {
+    font-family: var(--sans); font-size: 13px; font-weight: 500;
+    width: calc(100% - 40px); padding: 11px;
+    background: var(--text-primary); color: #fff;
+    border: none; border-radius: var(--radius-sm);
+    cursor: pointer; margin: 14px 20px 0; display: block;
+  }
+  .btn-save-recur:hover { opacity: 0.85; }
+
   /* Link buttons */
   .link-btn {
     background: none;
@@ -1017,6 +1204,42 @@
     <div class="monthly-total-right" id="monthlyTotalRight"></div>
   </div>
 
+  <!-- 정기지출 카드 -->
+  <div class="recur-card">
+    <div class="recur-header">
+      <div class="recur-header-left">
+        <div class="recur-label">정기지출</div>
+        <div class="recur-total" id="recurTotal">0원 / 월</div>
+      </div>
+      <div class="recur-header-right">
+        <div class="recur-toggle-wrap">
+          <span class="recur-toggle-label">예산 차감</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="recurDeductToggle">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <span class="recur-deduct-badge off" id="recurDeductBadge">차감 안 함</span>
+        <button class="btn-recur-edit" id="btnRecurEdit">편집</button>
+      </div>
+    </div>
+    <div class="recur-list" id="recurList"></div>
+  </div>
+
+  <!-- 정기지출 편집 모달 -->
+  <div class="recur-modal-overlay" id="recurModalOverlay">
+    <div class="recur-modal">
+      <div class="recur-modal-handle"></div>
+      <div class="recur-modal-header">
+        <div class="recur-modal-title">정기지출 편집</div>
+        <button class="recur-modal-close" id="recurModalClose">×</button>
+      </div>
+      <div class="recur-edit-list" id="recurEditList"></div>
+      <button class="btn-add-recur" id="btnAddRecur">+ 항목 추가</button>
+      <button class="btn-save-recur" id="btnSaveRecur">저장</button>
+    </div>
+  </div>
+
   <!-- Budget hero -->
   <div class="budget-hero">
     <div class="budget-label">이번 달 선택 가능 금액</div>
@@ -1133,8 +1356,11 @@ function totalUsed(state) {
 }
 
 function effectiveLimit(state) {
-  // 총 한도 + 이월 잔액(음수면 차감)
-  return totalBudget(state) + state.carryover;
+  // 총 한도 + 이월 잔액 - 정기지출(차감 ON일 때)
+  const base = totalBudget(state) + state.carryover;
+  const r = loadRecur();
+  const recurDeduct = r.deduct ? recurMonthlyTotal(r) : 0;
+  return base - recurDeduct;
 }
 
 function remaining(state) {
@@ -1843,6 +2069,151 @@ function initFandom() {
   });
 }
 
+// ─── 정기지출 시스템 ───
+const KEY_RECUR = 'bcs_recur_v1';
+
+function loadRecur() {
+  try {
+    const raw = localStorage.getItem(KEY_RECUR);
+    if (!raw) return { deduct: false, items: [] };
+    return JSON.parse(raw);
+  } catch(e) { return { deduct: false, items: [] }; }
+}
+
+function saveRecur(r) {
+  localStorage.setItem(KEY_RECUR, JSON.stringify(r));
+}
+
+function recurMonthlyTotal(r) {
+  // 월 환산 합계 (매월=그대로, 매년=÷12)
+  return r.items.reduce((s, item) => {
+    return s + (item.cycle === 'yearly' ? Math.round(item.amount / 12) : item.amount);
+  }, 0);
+}
+
+function renderRecurCard(r) {
+  const monthly = recurMonthlyTotal(r);
+  document.getElementById('recurTotal').textContent =
+    monthly > 0 ? monthly.toLocaleString('ko-KR') + '원 / 월' : '항목 없음';
+
+  // 토글 + 배지 상태
+  const toggle = document.getElementById('recurDeductToggle');
+  toggle.checked = r.deduct;
+  const badge = document.getElementById('recurDeductBadge');
+  if (r.deduct) {
+    badge.textContent = '예산 차감 중';
+    badge.className = 'recur-deduct-badge on';
+  } else {
+    badge.textContent = '차감 안 함';
+    badge.className = 'recur-deduct-badge off';
+  }
+
+  // 항목 목록
+  const list = document.getElementById('recurList');
+  list.innerHTML = '';
+  if (r.items.length === 0) {
+    list.innerHTML = '<div class="recur-empty">정기지출 항목이 없어요</div>';
+    return;
+  }
+  r.items.forEach(item => {
+    const monthlyAmt = item.cycle === 'yearly' ? Math.round(item.amount / 12) : item.amount;
+    const cycleLabel = item.cycle === 'yearly' ? `연 ${item.amount.toLocaleString('ko-KR')}원` : '매월';
+    const div = document.createElement('div');
+    div.className = 'recur-item';
+    div.innerHTML = `
+      <div class="recur-item-dot"></div>
+      <div class="recur-item-name">${item.name}</div>
+      <div class="recur-item-cycle">${cycleLabel}</div>
+      <div class="recur-item-amt">${monthlyAmt.toLocaleString('ko-KR')}원</div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function renderRecurEditList(items) {
+  const el = document.getElementById('recurEditList');
+  el.innerHTML = '';
+  items.forEach((item, i) => {
+    const row = document.createElement('div');
+    row.className = 'recur-edit-row';
+    row.dataset.idx = i;
+    row.innerHTML = `
+      <input class="recur-edit-name" type="text" value="${item.name}" placeholder="항목명 (예: 교통비)">
+      <input class="recur-edit-amt" type="number" value="${item.amount}" placeholder="금액">
+      <select class="recur-edit-cycle">
+        <option value="monthly" ${item.cycle !== 'yearly' ? 'selected' : ''}>매월</option>
+        <option value="yearly"  ${item.cycle === 'yearly'  ? 'selected' : ''}>매년</option>
+      </select>
+      <button class="recur-edit-del">×</button>
+    `;
+    row.querySelector('.recur-edit-del').onclick = () => {
+      items.splice(i, 1);
+      renderRecurEditList(items);
+    };
+    el.appendChild(row);
+  });
+}
+
+function initRecur(getState) {
+  const r = loadRecur();
+
+  renderRecurCard(r);
+
+  // 토글 변경 → 즉시 저장 + 예산 재계산
+  document.getElementById('recurDeductToggle').onchange = (e) => {
+    r.deduct = e.target.checked;
+    saveRecur(r);
+    renderRecurCard(r);
+    renderBudgetHero(getState());  // 선택 가능 금액 즉시 반영
+    showToast(r.deduct ? '정기지출이 예산에서 차감됩니다' : '정기지출 차감을 해제했어요');
+  };
+
+  // 모달 열기/닫기
+  document.getElementById('btnRecurEdit').onclick = () => {
+    renderRecurEditList([...r.items]);
+    document.getElementById('recurModalOverlay').classList.add('open');
+  };
+  document.getElementById('recurModalClose').onclick = () =>
+    document.getElementById('recurModalOverlay').classList.remove('open');
+  document.getElementById('recurModalOverlay').onclick = (e) => {
+    if (e.target === document.getElementById('recurModalOverlay'))
+      document.getElementById('recurModalOverlay').classList.remove('open');
+  };
+
+  // 항목 추가
+  document.getElementById('btnAddRecur').onclick = () => {
+    const rows = document.getElementById('recurEditList').querySelectorAll('.recur-edit-row');
+    const current = [];
+    rows.forEach(row => {
+      current.push({
+        name: row.querySelector('.recur-edit-name').value.trim() || '항목',
+        amount: parseInt(row.querySelector('.recur-edit-amt').value) || 0,
+        cycle: row.querySelector('.recur-edit-cycle').value,
+      });
+    });
+    current.push({ name: '', amount: 0, cycle: 'monthly' });
+    renderRecurEditList(current);
+  };
+
+  // 저장
+  document.getElementById('btnSaveRecur').onclick = () => {
+    const rows = document.getElementById('recurEditList').querySelectorAll('.recur-edit-row');
+    const updated = [];
+    rows.forEach(row => {
+      const name = row.querySelector('.recur-edit-name').value.trim();
+      const amount = parseInt(row.querySelector('.recur-edit-amt').value) || 0;
+      const cycle = row.querySelector('.recur-edit-cycle').value;
+      if (name) updated.push({ name, amount, cycle });
+    });
+    r.items = updated;
+    saveRecur(r);
+    renderRecurCard(r);
+    renderBudgetHero(getState());
+    document.getElementById('recurModalOverlay').classList.remove('open');
+    showToast('정기지출 항목을 저장했어요');
+  };
+}
+
 // ─── JSON 내보내기 / 불러오기 ───
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -1862,6 +2233,7 @@ function initBackup() {
       state: loadState(),
       assets: loadAssets(),
       fandom: loadFandom(),
+      recur: loadRecur(),
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -1891,6 +2263,7 @@ function initBackup() {
         saveState(data.state);
         saveAssets(data.assets);
         if (data.fandom) saveFandom(data.fandom);
+        if (data.recur)  saveRecur(data.recur);
         // 앱 전체 재초기화
         location.reload();
       } catch(err) {
@@ -1913,6 +2286,7 @@ function init() {
   initCatEdit(state);
   initAsset();
   initFandom();
+  initRecur(() => loadState());
   initBackup();
 }
 
