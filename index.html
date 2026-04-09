@@ -348,12 +348,11 @@
     background: transparent;
     color: var(--text-secondary);
     cursor: pointer;
-    transition: all 0.12s;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
   }
   .cat-btn:hover { background: #f0ede6; }
-  .cat-btn.active-food { background: #e6f0f8; color: var(--food); border-color: var(--food); }
-  .cat-btn.active-hobby_variable { background: #f0eaf8; color: var(--hobby-var); border-color: var(--hobby-var); }
-  .cat-btn.active-hobby_select { background: #f8f0e8; color: var(--hobby-sel); border-color: var(--hobby-sel); }
+  /* active state is applied via inline style in JS (works for any color) */
+  .cat-btn.cat-btn-active { font-weight: 500; }
   .btn-add {
     font-family: var(--sans);
     font-size: 13px;
@@ -760,6 +759,123 @@
   }
   .btn-fandom-confirm:hover { opacity: 0.85; }
 
+  /* Monthly total spending card */
+  .monthly-total-card {
+    background: #1a1a1a;
+    border-radius: var(--radius);
+    border: none;
+    padding: 20px 22px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+  .monthly-total-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #e05a3a, #c0392b);
+  }
+  .monthly-total-left { display: flex; flex-direction: column; gap: 3px; }
+  .monthly-total-label {
+    font-size: 11px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+  }
+  .monthly-total-amt {
+    font-family: var(--mono);
+    font-size: 36px;
+    font-weight: 500;
+    letter-spacing: -1px;
+    color: #ffffff;
+  }
+  .monthly-total-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+  .monthly-total-sub-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    font-family: var(--mono);
+  }
+  .monthly-total-sub-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* #3 Fix: cat-btn active uses inline style now — just keep base */
+  .cat-btn.cat-btn-active {
+    font-weight: 500;
+  }
+
+  /* #3 Color picker in cat edit */
+  .cat-color-swatch {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 2px solid rgba(0,0,0,0.1);
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 0;
+    outline: none;
+    background: none;
+    overflow: hidden;
+    position: relative;
+  }
+  .cat-color-swatch input[type=color] {
+    position: absolute;
+    inset: -4px;
+    width: calc(100% + 8px);
+    height: calc(100% + 8px);
+    opacity: 0;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+  }
+  .cat-color-dot {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  /* #2 Deduction notice in budget meta */
+  .meta-deduct-note {
+    font-size: 11px;
+    color: var(--warn2);
+    margin-top: 8px;
+    background: rgba(192,57,43,0.07);
+    border-radius: var(--radius-sm);
+    border-left: 2px solid var(--warn2);
+    padding: 7px 12px;
+    line-height: 1.6;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .meta-deduct-icon { flex-shrink: 0; font-size: 12px; margin-top: 1px; }
+  .meta-carry-note {
+    font-size: 11px;
+    color: var(--accent);
+    margin-top: 8px;
+    background: rgba(45,106,79,0.07);
+    border-radius: var(--radius-sm);
+    border-left: 2px solid var(--accent);
+    padding: 7px 12px;
+    line-height: 1.6;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
   /* Link buttons */
   .link-btn {
     background: none;
@@ -892,6 +1008,15 @@
     </div>
   </div>
 
+  <!-- #1 Monthly total spending card -->
+  <div class="monthly-total-card">
+    <div class="monthly-total-left">
+      <div class="monthly-total-label">이번 달 총 소비액</div>
+      <div class="monthly-total-amt" id="monthlyTotalAmt">0원</div>
+    </div>
+    <div class="monthly-total-right" id="monthlyTotalRight"></div>
+  </div>
+
   <!-- Budget hero -->
   <div class="budget-hero">
     <div class="budget-label">이번 달 선택 가능 금액</div>
@@ -902,6 +1027,14 @@
       <div class="meta-item"><span>한도</span><span id="metaLimit">250,000원</span></div>
       <div class="meta-item"><span>사용</span><span id="metaUsed">0원</span></div>
       <div class="meta-item"><span>이월잔액</span><span id="metaCarry">0원</span></div>
+    </div>
+    <div class="meta-deduct-note" id="metaDeductNote" style="display:none">
+      <span class="meta-deduct-icon">⚠</span>
+      <span id="metaDeductText"></span>
+    </div>
+    <div class="meta-carry-note" id="metaCarryNote" style="display:none">
+      <span class="meta-deduct-icon">↓</span>
+      <span id="metaCarryText"></span>
     </div>
   </div>
 
@@ -1049,6 +1182,35 @@ function renderBudgetHero(state) {
   document.getElementById('metaUsed').textContent = fmt(totalUsed(state));
   document.getElementById('metaCarry').textContent = (state.carryover >= 0 ? '+' : '') + fmtSigned(state.carryover);
 
+  // #2 차감/이월 안내 노트 — 더 직관적으로
+  const deductNote = document.getElementById('metaDeductNote');
+  const carryNote  = document.getElementById('metaCarryNote');
+  const overAmt = totalUsed(state) - effectiveLimit(state);
+
+  if (overAmt > 0) {
+    // 현재 초과 중 → 다음 달 차감 예고
+    deductNote.style.display = 'flex';
+    document.getElementById('metaDeductText').textContent =
+      `한도 ${fmt(overAmt)} 초과 중 · 월 마감 시 다음 달 선택 가능 금액에서 ${fmt(overAmt)} 차감됩니다`;
+    carryNote.style.display = 'none';
+  } else if (state.carryover < 0) {
+    // 이미 지난 달 초과분이 이번 달에 차감된 상태
+    deductNote.style.display = 'flex';
+    document.getElementById('metaDeductText').textContent =
+      `지난 달 초과분 ${fmt(-state.carryover)} 차감 적용 중 · 한도가 ${fmt(-state.carryover)} 줄어든 상태예요`;
+    carryNote.style.display = 'none';
+  } else {
+    deductNote.style.display = 'none';
+    // 이월 중인 경우 초록 안내
+    if (state.carryover > 0) {
+      carryNote.style.display = 'flex';
+      document.getElementById('metaCarryText').textContent =
+        `지난 달 절약분 ${fmt(state.carryover)} 이월 적용 중 · 한도가 그만큼 늘어났어요`;
+    } else {
+      carryNote.style.display = 'none';
+    }
+  }
+
   // carryover banner
   const banner = document.getElementById('carryoverBanner');
   if (state.carryover !== 0) {
@@ -1095,17 +1257,40 @@ function renderCatList(state) {
   });
 }
 
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return `${r},${g},${b}`;
+}
+
 function renderCatBtns(state, selectedId) {
   const group = document.getElementById('catBtnGroup');
   group.innerHTML = '';
   state.categories.forEach(c => {
     const btn = document.createElement('button');
-    btn.className = 'cat-btn' + (c.id === selectedId ? ' active-' + c.id : '');
+    const isActive = c.id === selectedId;
+    btn.className = 'cat-btn' + (isActive ? ' cat-btn-active' : '');
     btn.dataset.id = c.id;
     btn.textContent = c.name;
+    if (isActive) {
+      btn.style.background = `rgba(${hexToRgb(c.color)},0.12)`;
+      btn.style.color = c.color;
+      btn.style.borderColor = c.color;
+    }
     btn.onclick = () => {
-      document.querySelectorAll('.cat-btn').forEach(b => b.className = 'cat-btn');
-      btn.className = 'cat-btn active-' + c.id;
+      // 모든 버튼 초기화
+      group.querySelectorAll('.cat-btn').forEach(b => {
+        b.className = 'cat-btn';
+        b.style.background = '';
+        b.style.color = '';
+        b.style.borderColor = '';
+      });
+      // 선택된 버튼 활성화
+      btn.className = 'cat-btn cat-btn-active';
+      btn.style.background = `rgba(${hexToRgb(c.color)},0.12)`;
+      btn.style.color = c.color;
+      btn.style.borderColor = c.color;
     };
     group.appendChild(btn);
   });
@@ -1150,13 +1335,45 @@ function renderLedger(state) {
   });
 }
 
+// #1 이번 달 총 소비액 (일반 + 덕질 합산)
+function renderMonthlyTotal(state) {
+  const generalUsed = totalUsed(state);
+  const f = loadFandom();
+  const fandomUsedAmt = fandomUsed(f);
+  const combined = generalUsed + fandomUsedAmt;
+
+  document.getElementById('monthlyTotalAmt').textContent = fmt(combined);
+
+  const right = document.getElementById('monthlyTotalRight');
+  right.innerHTML = '';
+
+  const items = [];
+  if (generalUsed > 0) items.push({ label: '일반 소비', amt: generalUsed, color: '#4a9eda' });
+  if (fandomUsedAmt > 0) items.push({ label: f.name || '덕질', amt: fandomUsedAmt, color: '#b47fdb' });
+
+  items.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'monthly-total-sub-item';
+    div.innerHTML = `
+      <div class="monthly-total-sub-dot" style="background:${item.color}"></div>
+      <span>${item.label} ${item.amt.toLocaleString('ko-KR')}원</span>
+    `;
+    right.appendChild(div);
+  });
+
+  if (combined === 0) {
+    right.innerHTML = '<div class="monthly-total-sub-item" style="color:rgba(255,255,255,0.25)">아직 소비 없음</div>';
+  }
+}
+
 function renderAll(state) {
   renderBudgetHero(state);
   renderCatList(state);
-  const selected = document.querySelector('.cat-btn[class*="active-"]');
+  const selected = document.querySelector('.cat-btn.cat-btn-active');
   const selId = selected ? selected.dataset.id : null;
   renderCatBtns(state, selId);
   renderLedger(state);
+  renderMonthlyTotal(state);
 }
 
 // ─── 추가 버튼 ───
@@ -1164,7 +1381,7 @@ function initAdd(state) {
   document.getElementById('btnAdd').onclick = () => {
     const amtRaw = parseFloat(document.getElementById('inputAmt').value);
     if (!amtRaw || amtRaw <= 0) { alert('금액을 입력해주세요'); return; }
-    const selected = document.querySelector('.cat-btn[class*="active-"]');
+    const selected = document.querySelector('.cat-btn.cat-btn-active');
     if (!selected) { alert('카테고리를 선택해주세요'); return; }
     const memo = document.getElementById('inputMemo').value.trim();
     const now = new Date();
@@ -1248,7 +1465,6 @@ function initCatEdit(state) {
   };
 
   saveBtn.onclick = () => {
-    // read from DOM
     const rows = editList.querySelectorAll('.cat-edit-row');
     const updated = [];
     rows.forEach(row => {
@@ -1256,14 +1472,8 @@ function initCatEdit(state) {
       const name = row.querySelector('.cat-edit-name').value.trim() || '카테고리';
       const budget = parseInt(row.querySelector('.cat-edit-budget').value) || 0;
       const carryover = row.querySelector('.modal-check').checked;
-      const existing = state.categories.find(c => c.id === id);
-      updated.push({
-        id,
-        name,
-        budget,
-        carryover,
-        color: existing ? existing.color : '#888888',
-      });
+      const color = row.querySelector('.cat-color-input').value || '#888888';
+      updated.push({ id, name, budget, carryover, color });
     });
     state.categories = updated;
     saveState(state);
@@ -1277,7 +1487,11 @@ function initCatEdit(state) {
       const row = document.createElement('div');
       row.className = 'cat-edit-row';
       row.dataset.id = c.id;
+      const colorVal = c.color || '#888888';
       row.innerHTML = `
+        <button class="cat-color-swatch" title="색상 선택" style="background:${colorVal}">
+          <input type="color" class="cat-color-input" value="${colorVal}">
+        </button>
         <input class="cat-edit-name" type="text" value="${c.name}" placeholder="이름">
         <input class="cat-edit-budget" type="number" value="${c.budget}" placeholder="예산">
         <label style="font-size:11px;color:var(--text-hint);display:flex;align-items:center;gap:3px;white-space:nowrap">
@@ -1285,6 +1499,10 @@ function initCatEdit(state) {
         </label>
         <button class="cat-del-btn">×</button>
       `;
+      // 색상 선택 시 스와치 배경 실시간 반영
+      const colorInput = row.querySelector('.cat-color-input');
+      const swatch = row.querySelector('.cat-color-swatch');
+      colorInput.oninput = () => { swatch.style.background = colorInput.value; };
       row.querySelector('.cat-del-btn').onclick = () => {
         state.categories = state.categories.filter(x => x.id !== c.id);
         renderCatEditList(state.categories);
@@ -1560,6 +1778,7 @@ function renderFandom(f) {
         f.entries = f.entries.filter(x => x.id !== e.id);
         saveFandom(f);
         renderFandom(f);
+        renderMonthlyTotal(loadState());
       };
       body.appendChild(row);
     });
@@ -1614,6 +1833,8 @@ function initFandom() {
     document.getElementById('fandomInputAmt').value = '';
     document.getElementById('fandomInputMemo').value = '';
     renderFandom(f);
+    // 총 소비액 카드도 갱신
+    renderMonthlyTotal(loadState());
   };
 
   // 메모 필드 엔터키
