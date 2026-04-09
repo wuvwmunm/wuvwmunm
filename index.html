@@ -1561,12 +1561,14 @@ function renderLedger(state) {
   });
 }
 
-// #1 이번 달 총 소비액 (일반 + 덕질 합산)
+// #1 이번 달 총 소비액 (일반 + 덕질 + 정기지출 합산)
 function renderMonthlyTotal(state) {
   const generalUsed = totalUsed(state);
   const f = loadFandom();
   const fandomUsedAmt = fandomUsed(f);
-  const combined = generalUsed + fandomUsedAmt;
+  const r = loadRecur();
+  const recurAmt = r.deduct ? recurMonthlyTotal(r) : 0;
+  const combined = generalUsed + fandomUsedAmt + recurAmt;
 
   document.getElementById('monthlyTotalAmt').textContent = fmt(combined);
 
@@ -1574,8 +1576,9 @@ function renderMonthlyTotal(state) {
   right.innerHTML = '';
 
   const items = [];
-  if (generalUsed > 0) items.push({ label: '일반 소비', amt: generalUsed, color: '#4a9eda' });
+  if (generalUsed > 0)   items.push({ label: '일반 소비', amt: generalUsed,   color: '#4a9eda' });
   if (fandomUsedAmt > 0) items.push({ label: f.name || '덕질', amt: fandomUsedAmt, color: '#b47fdb' });
+  if (recurAmt > 0)      items.push({ label: '정기지출',  amt: recurAmt,       color: '#9b8ecf' });
 
   items.forEach(item => {
     const div = document.createElement('div');
@@ -2164,7 +2167,9 @@ function initRecur(getState) {
     r.deduct = e.target.checked;
     saveRecur(r);
     renderRecurCard(r);
-    renderBudgetHero(getState());  // 선택 가능 금액 즉시 반영
+    const st = getState();
+    renderBudgetHero(st);
+    renderMonthlyTotal(st);
     showToast(r.deduct ? '정기지출이 예산에서 차감됩니다' : '정기지출 차감을 해제했어요');
   };
 
@@ -2208,7 +2213,9 @@ function initRecur(getState) {
     r.items = updated;
     saveRecur(r);
     renderRecurCard(r);
-    renderBudgetHero(getState());
+    const st = getState();
+    renderBudgetHero(st);
+    renderMonthlyTotal(st);
     document.getElementById('recurModalOverlay').classList.remove('open');
     showToast('정기지출 항목을 저장했어요');
   };
