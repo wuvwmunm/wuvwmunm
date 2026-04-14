@@ -6,2297 +6,1047 @@
 <title>소비 선택 시스템</title>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #f7f6f2;
-    --surface: #ffffff;
-    --border: rgba(0,0,0,0.09);
-    --border-med: rgba(0,0,0,0.16);
-    --text-primary: #1a1a1a;
-    --text-secondary: #6b6b6b;
-    --text-hint: #aaaaaa;
-    --accent: #2d6a4f;
-    --accent-light: #e8f5ee;
-    --warn1: #b37c00;
-    --warn2: #c0392b;
-    --food: #1a6fa8;
-    --hobby-var: #6d4fa8;
-    --hobby-sel: #a8724f;
-    --radius: 12px;
-    --radius-sm: 8px;
-    --mono: 'DM Mono', monospace;
-    --sans: 'Pretendard', -apple-system, sans-serif;
-    /* asset palette */
-    --a1: #2563a8; --a2: #2d8f6f; --a3: #a85c2d; --a4: #7c3a9e;
-    --a5: #b34a4a; --a6: #4a7a4a; --a7: #8a6a2a; --a8: #3a6a8a;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: var(--sans);
-    background: var(--bg);
-    color: var(--text-primary);
-    min-height: 100vh;
-    font-size: 15px;
-    line-height: 1.5;
-  }
-  /* Layout */
-  .shell {
-    max-width: 560px;
-    margin: 0 auto;
-    padding: 24px 16px 80px;
-  }
-  /* Header */
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 24px;
-  }
-  .date-block .date-main {
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: -0.3px;
-  }
-  .date-block .date-sub {
-    font-size: 12px;
-    color: var(--text-hint);
-    margin-top: 2px;
-  }
-  .btn-reset {
-    font-family: var(--sans);
-    font-size: 12px;
-    color: var(--text-secondary);
-    background: var(--surface);
-    border: 0.5px solid var(--border-med);
-    border-radius: 20px;
-    padding: 6px 14px;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-  .btn-reset:hover { background: #f0ede6; }
+:root {
+  --bg:#f7f6f2; --surface:#fff; --border:rgba(0,0,0,0.09); --border-med:rgba(0,0,0,0.16);
+  --text-primary:#1a1a1a; --text-secondary:#6b6b6b; --text-hint:#aaa;
+  --accent:#2d6a4f; --accent-light:#e8f5ee;
+  --warn1:#b37c00; --warn2:#c0392b;
+  --radius:12px; --radius-sm:8px;
+  --mono:'DM Mono',monospace; --sans:'Pretendard',-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--text-primary);min-height:100vh;font-size:15px;line-height:1.5}
+.shell{max-width:560px;margin:0 auto;padding:24px 16px 80px}
 
-  /* Main budget card */
-  .budget-hero {
-    background: var(--surface);
-    border-radius: var(--radius);
-    border: 0.5px solid var(--border);
-    padding: 20px 22px 16px;
-    margin-bottom: 12px;
-  }
-  .budget-label {
-    font-size: 11px;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    color: var(--text-hint);
-    margin-bottom: 6px;
-  }
-  .budget-amount {
-    font-family: var(--mono);
-    font-size: 40px;
-    font-weight: 500;
-    letter-spacing: -1px;
-    transition: color 0.4s;
-    color: var(--text-primary);
-  }
-  .budget-amount.warn1 { color: var(--warn1); }
-  .budget-amount.warn2 { color: var(--warn2); }
-  .budget-status {
-    font-size: 12px;
-    margin-top: 4px;
-    color: var(--text-secondary);
-  }
-  .budget-divider {
-    border: none;
-    border-top: 0.5px solid var(--border);
-    margin: 14px 0;
-  }
-  .budget-meta {
-    display: flex;
-    gap: 20px;
-  }
-  .meta-item {
-    font-size: 12px;
-    color: var(--text-secondary);
-  }
-  .meta-item span {
-    display: block;
-    font-size: 11px;
-    color: var(--text-hint);
-    margin-bottom: 1px;
-  }
+/* Header */
+.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.date-main{font-size:18px;font-weight:600;letter-spacing:-.3px}
+.date-sub{font-size:12px;color:var(--text-hint);margin-top:2px}
+.btn-reset{font-family:var(--sans);font-size:12px;color:var(--text-secondary);background:var(--surface);border:.5px solid var(--border-med);border-radius:20px;padding:6px 14px;cursor:pointer;transition:background .15s}
+.btn-reset:hover{background:#f0ede6}
 
-  /* Asset card */
-  .asset-card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    border: 0.5px solid var(--border);
-    padding: 14px 22px;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    transition: background 0.12s;
-  }
-  .asset-card:hover { background: #faf9f6; }
-  .asset-left { display: flex; flex-direction: column; gap: 2px; }
-  .asset-label { font-size: 11px; letter-spacing: 0.6px; text-transform: uppercase; color: var(--text-hint); }
-  .asset-total { font-family: var(--mono); font-size: 26px; font-weight: 500; letter-spacing: -0.5px; color: var(--text-primary); }
-  .asset-sub { font-size: 11px; color: var(--text-hint); margin-top: 1px; }
-  .asset-right { display: flex; align-items: center; gap: 12px; }
-  .asset-arrow { font-size: 16px; color: var(--text-hint); }
+/* Backup bar */
+.backup-bar{display:flex;gap:6px;justify-content:flex-end;margin-bottom:16px}
+.btn-backup{font-family:var(--sans);font-size:11px;color:var(--text-secondary);background:var(--surface);border:.5px solid var(--border-med);border-radius:20px;padding:5px 12px;cursor:pointer;transition:background .12s}
+.btn-backup:hover{background:#f0ede6}
+.btn-backup.import{color:var(--accent);border-color:rgba(45,106,79,.35)}
+.btn-backup.import:hover{background:var(--accent-light)}
 
-  /* Asset detail modal */
-  .asset-modal-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.45); z-index: 200;
-    align-items: flex-end; justify-content: center;
-  }
-  .asset-modal-overlay.open { display: flex; }
-  .asset-modal {
-    background: var(--surface);
-    border-radius: 18px 18px 0 0;
-    width: 100%; max-width: 560px;
-    max-height: 92vh; overflow-y: auto;
-    padding-bottom: 40px;
-  }
-  .asset-modal-handle {
-    width: 36px; height: 4px;
-    background: var(--border-med);
-    border-radius: 99px;
-    margin: 12px auto 0;
-  }
-  .asset-modal-header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 16px 20px 0;
-  }
-  .asset-modal-title { font-size: 16px; font-weight: 600; }
-  .asset-modal-close { background: none; border: none; font-size: 22px; color: var(--text-hint); cursor: pointer; line-height: 1; }
-  .donut-wrap { display: flex; flex-direction: column; align-items: center; padding: 24px 20px 8px; gap: 2px; }
-  .donut-total-label { font-size: 11px; color: var(--text-hint); letter-spacing: 0.4px; text-transform: uppercase; }
-  .donut-total-amt { font-family: var(--mono); font-size: 28px; font-weight: 500; letter-spacing: -0.5px; margin-top: 4px; }
-  .asset-legend {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-    padding: 0 20px 16px;
-  }
-  .legend-item {
-    display: flex; align-items: center; gap: 8px;
-    background: var(--bg); border-radius: var(--radius-sm); padding: 8px 12px;
-  }
-  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .legend-info { display: flex; flex-direction: column; gap: 1px; min-width: 0; overflow: hidden; }
-  .legend-name { font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .legend-amt { font-family: var(--mono); font-size: 11px; color: var(--text-secondary); }
-  .legend-pct { font-size: 10px; color: var(--text-hint); }
-  .asset-edit-section { padding: 16px 20px 0; border-top: 0.5px solid var(--border); }
-  .asset-edit-title { font-size: 12px; font-weight: 500; color: var(--text-secondary); margin-bottom: 10px; }
-  .asset-item-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
-  .asset-item-row input {
-    font-family: var(--sans); font-size: 13px;
-    border: 0.5px solid var(--border-med); border-radius: var(--radius-sm);
-    padding: 8px 10px; outline: none;
-    background: var(--bg); color: var(--text-primary);
-  }
-  .asset-item-name { flex: 1; }
-  .asset-item-amt { width: 120px; font-family: var(--mono) !important; }
-  .asset-item-del { background: none; border: none; color: var(--text-hint); font-size: 18px; cursor: pointer; padding: 0; line-height: 1; }
-  .asset-item-del:hover { color: var(--warn2); }
-  .btn-add-asset-item {
-    font-family: var(--sans); font-size: 12px; color: var(--accent);
-    background: none; border: 0.5px dashed var(--accent);
-    border-radius: var(--radius-sm); padding: 7px 14px;
-    cursor: pointer; margin-top: 4px; width: 100%;
-  }
-  .btn-save-asset {
-    font-family: var(--sans); font-size: 13px; font-weight: 500;
-    width: 100%; padding: 11px;
-    background: var(--text-primary); color: #fff;
-    border: none; border-radius: var(--radius-sm);
-    cursor: pointer; margin-top: 14px;
-  }
-  .btn-save-asset:hover { opacity: 0.85; }
-  .asset-empty { text-align: center; padding: 32px 20px; color: var(--text-hint); font-size: 13px; }
+/* Toast */
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text-primary);color:#fff;font-size:13px;padding:10px 20px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:9999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-  /* Carryover banner */
-  .carryover-banner {
-    background: var(--accent-light);
-    border-radius: var(--radius-sm);
-    border: 0.5px solid rgba(45,106,79,0.2);
-    padding: 8px 14px;
-    margin-bottom: 12px;
-    font-size: 12px;
-    color: var(--accent);
-    display: none;
-  }
-  .carryover-banner.visible { display: block; }
+/* Section */
+.section-label{font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--text-hint)}
+.section-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;margin-top:4px}
+.link-btn{background:none;border:none;font-family:var(--sans);font-size:11px;color:var(--text-hint);cursor:pointer;text-decoration:underline;padding:0}
+.link-btn:hover{color:var(--text-secondary)}
 
-  /* Category cards */
-  .section-title {
-    font-size: 11px;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    color: var(--text-hint);
-    margin-bottom: 8px;
-    margin-top: 4px;
-  }
-  .cat-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
-  .cat-card {
-    background: var(--surface);
-    border-radius: var(--radius-sm);
-    border: 0.5px solid var(--border);
-    padding: 12px 16px;
-  }
-  .cat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 7px;
-  }
-  .cat-name {
-    font-size: 13px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .cat-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    display: inline-block;
-  }
-  .cat-dot.food { background: var(--food); }
-  .cat-dot.hobby_variable { background: var(--hobby-var); }
-  .cat-dot.hobby_select { background: var(--hobby-sel); }
-  .cat-available {
-    font-size: 12px;
-    color: var(--text-secondary);
-    font-family: var(--mono);
-  }
-  .cat-bar-bg {
-    height: 4px;
-    background: #eeece8;
-    border-radius: 99px;
-    overflow: hidden;
-  }
-  .cat-bar-fill {
-    height: 100%;
-    border-radius: 99px;
-    transition: width 0.3s ease;
-  }
-  .cat-bar-fill.food { background: var(--food); }
-  .cat-bar-fill.hobby_variable { background: var(--hobby-var); }
-  .cat-bar-fill.hobby_select { background: var(--hobby-sel); }
-  .cat-numbers {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 6px;
-    font-size: 11px;
-    color: var(--text-hint);
-    font-family: var(--mono);
-  }
+/* Card */
+.card{background:var(--surface);border-radius:var(--radius);border:.5px solid var(--border);padding:16px 20px;margin-bottom:12px}
 
-  /* Input row */
-  .input-zone {
-    background: var(--surface);
-    border-radius: var(--radius);
-    border: 0.5px solid var(--border);
-    padding: 14px 16px;
-    margin-bottom: 12px;
-  }
-  .input-row {
-    display: flex;
-    gap: 8px;
-    align-items: stretch;
-    flex-wrap: wrap;
-  }
-  .input-amount {
-    font-family: var(--mono);
-    font-size: 17px;
-    border: none;
-    outline: none;
-    background: transparent;
-    color: var(--text-primary);
-    width: 130px;
-    padding: 4px 0;
-    border-bottom: 1.5px solid var(--border-med);
-  }
-  .input-amount::placeholder { color: var(--text-hint); font-size: 14px; }
-  .input-memo {
-    font-family: var(--sans);
-    font-size: 13px;
-    border: none;
-    outline: none;
-    background: transparent;
-    color: var(--text-primary);
-    flex: 1;
-    min-width: 80px;
-    padding: 4px 0;
-    border-bottom: 1.5px solid var(--border-med);
-  }
-  .input-memo::placeholder { color: var(--text-hint); }
-  .cat-btn-group {
-    display: flex;
-    gap: 5px;
-    margin-top: 10px;
-    flex-wrap: wrap;
-  }
-  .cat-btn {
-    font-family: var(--sans);
-    font-size: 11px;
-    padding: 5px 11px;
-    border-radius: 20px;
-    border: 0.5px solid var(--border-med);
-    background: transparent;
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: background 0.12s, color 0.12s, border-color 0.12s;
-  }
-  .cat-btn:hover { background: #f0ede6; }
-  /* active state is applied via inline style in JS (works for any color) */
-  .cat-btn.cat-btn-active { font-weight: 500; }
-  .btn-add {
-    font-family: var(--sans);
-    font-size: 13px;
-    font-weight: 500;
-    padding: 8px 18px;
-    background: var(--text-primary);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    margin-top: 10px;
-    width: 100%;
-    transition: opacity 0.15s;
-  }
-  .btn-add:hover { opacity: 0.85; }
+/* Asset card */
+.asset-card-wrap{cursor:pointer;transition:background .12s;display:flex;align-items:center;justify-content:space-between}
+.asset-card-wrap:hover{background:#faf9f6}
+.asset-total{font-family:var(--mono);font-size:26px;font-weight:500;letter-spacing:-.5px}
+.asset-sub{font-size:11px;color:var(--text-hint);margin-top:1px}
 
-  /* Ledger */
-  .ledger {
-    background: var(--surface);
-    border-radius: var(--radius);
-    border: 0.5px solid var(--border);
-    overflow: hidden;
-    margin-bottom: 12px;
-  }
-  .ledger-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 16px;
-    border-bottom: 0.5px solid var(--border);
-  }
-  .ledger-title { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
-  .ledger-total {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--text-secondary);
-  }
-  .ledger-row {
-    display: flex;
-    align-items: center;
-    padding: 10px 16px;
-    border-bottom: 0.5px solid var(--border);
-    gap: 10px;
-    animation: fadeIn 0.2s ease;
-  }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
-  .ledger-row:last-child { border-bottom: none; }
-  .ledger-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-  .ledger-memo { flex: 1; font-size: 13px; color: var(--text-primary); }
-  .ledger-cat { font-size: 11px; color: var(--text-hint); }
-  .ledger-amt {
-    font-family: var(--mono);
-    font-size: 14px;
-    color: var(--text-primary);
-    font-weight: 500;
-    flex-shrink: 0;
-  }
-  .ledger-del {
-    background: none;
-    border: none;
-    color: var(--text-hint);
-    cursor: pointer;
-    font-size: 16px;
-    padding: 0 2px;
-    line-height: 1;
-  }
-  .ledger-del:hover { color: var(--warn2); }
-  .ledger-empty {
-    padding: 24px 16px;
-    text-align: center;
-    color: var(--text-hint);
-    font-size: 13px;
-  }
+/* Income card */
+.income-wrap{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.income-amount{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--accent)}
+.income-sub{font-size:11px;color:var(--text-hint);margin-top:2px}
+.income-pct{font-size:22px;font-weight:600;font-family:var(--mono)}
+.income-pct.safe{color:var(--accent)}.income-pct.warn1{color:var(--warn1)}.income-pct.warn2{color:var(--warn2)}
+.income-stat{font-size:11px;color:var(--text-secondary);font-family:var(--mono);text-align:right}
+.btn-income-set{font-family:var(--sans);font-size:11px;color:var(--accent);background:#e8f5ee;border:.5px solid rgba(45,106,79,.3);border-radius:20px;padding:4px 11px;cursor:pointer;white-space:nowrap}
+.btn-income-set:hover{background:#d4eddf}
 
-  /* Category edit modal */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    z-index: 100;
-    align-items: flex-end;
-    justify-content: center;
-  }
-  .modal-overlay.open { display: flex; }
-  .modal {
-    background: var(--surface);
-    border-radius: 16px 16px 0 0;
-    width: 100%;
-    max-width: 560px;
-    padding: 24px 20px 32px;
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-  .modal-title {
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 16px;
-  }
-  .modal-close {
-    float: right;
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    color: var(--text-hint);
-    line-height: 1;
-    margin-top: -2px;
-  }
-  .cat-edit-row {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  .cat-edit-row input {
-    font-family: var(--sans);
-    font-size: 13px;
-    border: 0.5px solid var(--border-med);
-    border-radius: var(--radius-sm);
-    padding: 8px 12px;
-    outline: none;
-    background: var(--bg);
-    color: var(--text-primary);
-  }
-  .cat-edit-name { flex: 1; }
-  .cat-edit-budget { width: 100px; font-family: var(--mono); }
-  .cat-edit-carry {
-    font-size: 11px;
-    color: var(--text-hint);
-  }
-  .cat-del-btn {
-    background: none;
-    border: none;
-    color: var(--text-hint);
-    cursor: pointer;
-    font-size: 18px;
-    padding: 0;
-  }
-  .cat-del-btn:hover { color: var(--warn2); }
-  .btn-add-cat {
-    font-family: var(--sans);
-    font-size: 12px;
-    color: var(--accent);
-    background: none;
-    border: 0.5px dashed var(--accent);
-    border-radius: var(--radius-sm);
-    padding: 7px 14px;
-    cursor: pointer;
-    margin-top: 4px;
-  }
-  .modal-save {
-    font-family: var(--sans);
-    font-size: 13px;
-    font-weight: 500;
-    width: 100%;
-    padding: 11px;
-    background: var(--text-primary);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    margin-top: 16px;
-  }
-  .modal-save:hover { opacity: 0.85; }
-  .modal-check { accent-color: var(--accent); }
+/* Monthly total */
+.monthly-total-card{background:#1a1a1a;border-radius:var(--radius);padding:20px 22px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden}
+.monthly-total-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#e05a3a,#c0392b)}
+.monthly-total-label{font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:rgba(255,255,255,.45)}
+.monthly-total-amt{font-family:var(--mono);font-size:36px;font-weight:500;letter-spacing:-1px;color:#fff}
+.monthly-sub-item{display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,.4);font-family:var(--mono)}
+.monthly-sub-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 
-  /* Backup bar */
-  .backup-bar {
-    display: flex;
-    gap: 6px;
-    justify-content: flex-end;
-    margin-bottom: 16px;
-  }
-  .btn-backup {
-    font-family: var(--sans);
-    font-size: 11px;
-    color: var(--text-secondary);
-    background: var(--surface);
-    border: 0.5px solid var(--border-med);
-    border-radius: 20px;
-    padding: 5px 12px;
-    cursor: pointer;
-    transition: background 0.12s;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .btn-backup:hover { background: #f0ede6; }
-  .btn-backup.import { color: var(--accent); border-color: rgba(45,106,79,0.35); }
-  .btn-backup.import:hover { background: var(--accent-light); }
-  /* Toast notification */
-  .toast {
-    position: fixed;
-    bottom: 32px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--text-primary);
-    color: #fff;
-    font-size: 13px;
-    padding: 10px 20px;
-    border-radius: 99px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s, transform 0.2s;
-    z-index: 999;
-    white-space: nowrap;
-  }
-  .toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
+/* Recur/Savings card shell */
+.panel{background:var(--surface);border-radius:var(--radius);border:.5px solid var(--border);margin-bottom:12px;overflow:hidden}
+.panel-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px}
+.panel-total{font-family:var(--mono);font-size:22px;font-weight:500}
+.panel-total.teal{color:#2d8f6f}
+.panel-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.toggle-wrap{display:flex;align-items:center;gap:5px}
+.toggle-label{font-size:11px;color:var(--text-secondary)}
+.toggle-sw{position:relative;width:36px;height:20px;flex-shrink:0}
+.toggle-sw input{opacity:0;width:0;height:0}
+.toggle-sl{position:absolute;inset:0;background:#d4d0c8;border-radius:99px;cursor:pointer;transition:background .2s}
+.toggle-sl::before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .2s}
+.toggle-sw input:checked+.toggle-sl{background:var(--accent)}
+.toggle-sw input:checked+.toggle-sl::before{transform:translateX(16px)}
+.deduct-badge{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:500}
+.deduct-badge.on{background:#e8f5ee;color:var(--accent)}.deduct-badge.off{background:#f0ede6;color:var(--text-hint)}
+.btn-panel-edit{font-family:var(--sans);font-size:11px;color:var(--text-hint);background:none;border:.5px solid var(--border-med);border-radius:20px;padding:4px 11px;cursor:pointer;transition:background .12s}
+.btn-panel-edit:hover{background:#f0ede6}
+.panel-list{border-top:.5px solid var(--border)}
+.panel-item{display:flex;align-items:center;gap:10px;padding:9px 18px;border-bottom:.5px solid var(--border)}
+.panel-item:last-child{border-bottom:none}
+.item-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;background:#9b8ecf}
+.item-dot.teal{background:#2d8f6f}
+.item-name{flex:1;font-size:13px}
+.item-cycle{font-size:11px;color:var(--text-hint)}
+.item-amt{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--text-secondary)}
+.item-bal{font-family:var(--mono);font-size:12px;font-weight:500;color:#2d8f6f}
+.btn-savings-pay{font-family:var(--sans);font-size:10px;padding:3px 8px;background:#e8f5ee;color:var(--accent);border:.5px solid rgba(45,106,79,.3);border-radius:99px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.btn-savings-pay:hover{background:#d4eddf}
+.panel-empty{padding:16px 18px;text-align:center;font-size:12px;color:var(--text-hint);border-top:.5px solid var(--border)}
 
-  /* Fandom budget card */
-  .fandom-card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    border: 0.5px solid var(--border);
-    padding: 16px 22px;
-    margin-bottom: 12px;
-  }
-  .fandom-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 10px;
-  }
-  .fandom-left { display: flex; flex-direction: column; gap: 2px; }
-  .fandom-label { font-size: 11px; letter-spacing: 0.6px; text-transform: uppercase; color: var(--text-hint); }
-  .fandom-amount {
-    font-family: var(--mono);
-    font-size: 28px;
-    font-weight: 500;
-    letter-spacing: -0.5px;
-    color: #9b4dca;
-    transition: color 0.3s;
-  }
-  .fandom-amount.warn1 { color: var(--warn1); }
-  .fandom-amount.warn2 { color: var(--warn2); }
-  .fandom-right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 4px;
-  }
-  .btn-fandom-set {
-    font-family: var(--sans);
-    font-size: 11px;
-    color: #9b4dca;
-    background: #f5eeff;
-    border: 0.5px solid rgba(155,77,202,0.3);
-    border-radius: 20px;
-    padding: 4px 11px;
-    cursor: pointer;
-    transition: background 0.12s;
-  }
-  .btn-fandom-set:hover { background: #ede0ff; }
-  .fandom-meta {
-    font-size: 11px;
-    color: var(--text-hint);
-    font-family: var(--mono);
-    text-align: right;
-  }
-  .fandom-bar-bg {
-    height: 4px;
-    background: #eeece8;
-    border-radius: 99px;
-    overflow: hidden;
-    margin-bottom: 6px;
-  }
-  .fandom-bar-fill {
-    height: 100%;
-    border-radius: 99px;
-    background: #9b4dca;
-    transition: width 0.3s ease;
-  }
-  .fandom-bar-fill.warn1 { background: var(--warn1); }
-  .fandom-bar-fill.warn2 { background: var(--warn2); }
-  .fandom-numbers {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: var(--text-hint);
-    font-family: var(--mono);
-  }
-  /* Fandom ledger (mini) */
-  .fandom-ledger {
-    margin-top: 10px;
-    border-top: 0.5px solid var(--border);
-    padding-top: 10px;
-  }
-  .fandom-ledger-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 0;
-    border-bottom: 0.5px solid var(--border);
-    animation: fadeIn 0.2s ease;
-  }
-  .fandom-ledger-row:last-child { border-bottom: none; }
-  .fandom-ledger-memo { flex: 1; font-size: 13px; color: var(--text-primary); }
-  .fandom-ledger-date { font-size: 11px; color: var(--text-hint); }
-  .fandom-ledger-amt { font-family: var(--mono); font-size: 13px; font-weight: 500; color: #9b4dca; flex-shrink: 0; }
-  .fandom-ledger-del { background: none; border: none; color: var(--text-hint); cursor: pointer; font-size: 15px; padding: 0; line-height: 1; }
-  .fandom-ledger-del:hover { color: var(--warn2); }
-  .fandom-ledger-empty { font-size: 12px; color: var(--text-hint); padding: 8px 0; text-align: center; }
-  /* Fandom input row */
-  .fandom-input-row {
-    display: flex;
-    gap: 6px;
-    margin-top: 10px;
-    align-items: center;
-  }
-  .fandom-input-amt {
-    font-family: var(--mono);
-    font-size: 14px;
-    border: none;
-    outline: none;
-    background: transparent;
-    color: var(--text-primary);
-    width: 110px;
-    padding: 4px 0;
-    border-bottom: 1.5px solid var(--border-med);
-  }
-  .fandom-input-amt::placeholder { color: var(--text-hint); font-size: 12px; }
-  .fandom-input-memo {
-    font-family: var(--sans);
-    font-size: 12px;
-    border: none;
-    outline: none;
-    background: transparent;
-    color: var(--text-primary);
-    flex: 1;
-    padding: 4px 0;
-    border-bottom: 1.5px solid var(--border-med);
-  }
-  .fandom-input-memo::placeholder { color: var(--text-hint); }
-  .btn-fandom-add {
-    font-family: var(--sans);
-    font-size: 12px;
-    font-weight: 500;
-    padding: 6px 14px;
-    background: #9b4dca;
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: opacity 0.15s;
-  }
-  .btn-fandom-add:hover { opacity: 0.85; }
-  /* Fandom set modal */
-  .fandom-modal-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.4); z-index: 300;
-    align-items: flex-end; justify-content: center;
-  }
-  .fandom-modal-overlay.open { display: flex; }
-  .fandom-modal {
-    background: var(--surface);
-    border-radius: 18px 18px 0 0;
-    width: 100%; max-width: 560px;
-    padding: 24px 20px 40px;
-  }
-  .fandom-modal-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
-  .fandom-modal-sub { font-size: 12px; color: var(--text-hint); margin-bottom: 18px; }
-  .fandom-modal-close { float: right; background: none; border: none; font-size: 22px; color: var(--text-hint); cursor: pointer; margin-top: -4px; }
-  .fandom-set-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
-  .fandom-set-label { font-size: 12px; color: var(--text-secondary); }
-  .fandom-set-input {
-    font-family: var(--mono);
-    font-size: 22px;
-    border: none;
-    border-bottom: 1.5px solid var(--border-med);
-    outline: none;
-    background: transparent;
-    color: var(--text-primary);
-    padding: 4px 0;
-    width: 100%;
-  }
-  .fandom-set-name-input {
-    font-family: var(--sans);
-    font-size: 14px;
-    border: none;
-    border-bottom: 1.5px solid var(--border-med);
-    outline: none;
-    background: transparent;
-    color: var(--text-primary);
-    padding: 4px 0;
-    width: 100%;
-  }
-  .btn-fandom-confirm {
-    font-family: var(--sans);
-    font-size: 13px;
-    font-weight: 500;
-    width: 100%;
-    padding: 11px;
-    background: #9b4dca;
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    margin-top: 4px;
-  }
-  .btn-fandom-confirm:hover { opacity: 0.85; }
+/* Notes */
+.deduct-note{font-size:11px;color:var(--warn2);margin-top:8px;background:rgba(192,57,43,.07);border-radius:var(--radius-sm);border-left:2px solid var(--warn2);padding:7px 12px;line-height:1.6;display:flex;gap:6px}
+.carry-note{font-size:11px;color:var(--accent);margin-top:8px;background:rgba(45,106,79,.07);border-radius:var(--radius-sm);border-left:2px solid var(--accent);padding:7px 12px;line-height:1.6;display:flex;gap:6px}
+.note-icon{flex-shrink:0}
 
-  /* Monthly total spending card */
-  .monthly-total-card {
-    background: #1a1a1a;
-    border-radius: var(--radius);
-    border: none;
-    padding: 20px 22px;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: relative;
-    overflow: hidden;
-  }
-  .monthly-total-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #e05a3a, #c0392b);
-  }
-  .monthly-total-left { display: flex; flex-direction: column; gap: 3px; }
-  .monthly-total-label {
-    font-size: 11px;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.45);
-  }
-  .monthly-total-amt {
-    font-family: var(--mono);
-    font-size: 36px;
-    font-weight: 500;
-    letter-spacing: -1px;
-    color: #ffffff;
-  }
-  .monthly-total-right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 6px;
-  }
-  .monthly-total-sub-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    color: rgba(255,255,255,0.4);
-    font-family: var(--mono);
-  }
-  .monthly-total-sub-dot {
-    width: 5px; height: 5px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
+/* Carryover banner */
+.carryover-banner{background:var(--accent-light);border-radius:var(--radius-sm);border:.5px solid rgba(45,106,79,.2);padding:8px 14px;margin-bottom:12px;font-size:12px;color:var(--accent);display:none}
+.carryover-banner.visible{display:block}
 
-  /* #3 Fix: cat-btn active uses inline style now — just keep base */
-  .cat-btn.cat-btn-active {
-    font-weight: 500;
-  }
+/* Budget hero */
+.budget-hero{background:var(--surface);border-radius:var(--radius);border:.5px solid var(--border);padding:20px 22px 16px;margin-bottom:12px}
+.budget-label{font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--text-hint);margin-bottom:6px}
+.budget-amount{font-family:var(--mono);font-size:40px;font-weight:500;letter-spacing:-1px;transition:color .4s;color:var(--text-primary)}
+.budget-amount.warn1{color:var(--warn1)}.budget-amount.warn2{color:var(--warn2)}
+.budget-status{font-size:12px;margin-top:4px;color:var(--text-secondary)}
+.budget-divider{border:none;border-top:.5px solid var(--border);margin:14px 0}
+.budget-meta{display:flex;gap:20px;flex-wrap:wrap}
+.meta-item{font-size:12px;color:var(--text-secondary)}
+.meta-item span{display:block;font-size:11px;color:var(--text-hint);margin-bottom:1px}
 
-  /* #3 Color picker in cat edit */
-  .cat-color-swatch {
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    border: 2px solid rgba(0,0,0,0.1);
-    cursor: pointer;
-    flex-shrink: 0;
-    padding: 0;
-    outline: none;
-    background: none;
-    overflow: hidden;
-    position: relative;
-  }
-  .cat-color-swatch input[type=color] {
-    position: absolute;
-    inset: -4px;
-    width: calc(100% + 8px);
-    height: calc(100% + 8px);
-    opacity: 0;
-    cursor: pointer;
-    border: none;
-    padding: 0;
-  }
-  .cat-color-dot {
-    width: 100%; height: 100%;
-    border-radius: 50%;
-    pointer-events: none;
-  }
+/* Cat bars */
+.cat-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.cat-card{background:var(--surface);border-radius:var(--radius-sm);border:.5px solid var(--border);padding:12px 16px}
+.cat-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+.cat-name{font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px}
+.cat-dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+.cat-available{font-size:12px;color:var(--text-secondary);font-family:var(--mono)}
+.cat-bar-bg{height:4px;background:#eeece8;border-radius:99px;overflow:hidden}
+.cat-bar-fill{height:100%;border-radius:99px;transition:width .3s}
+.cat-numbers{display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--text-hint);font-family:var(--mono)}
 
-  /* #2 Deduction notice in budget meta */
-  .meta-deduct-note {
-    font-size: 11px;
-    color: var(--warn2);
-    margin-top: 8px;
-    background: rgba(192,57,43,0.07);
-    border-radius: var(--radius-sm);
-    border-left: 2px solid var(--warn2);
-    padding: 7px 12px;
-    line-height: 1.6;
-    display: flex;
-    align-items: flex-start;
-    gap: 6px;
-  }
-  .meta-deduct-icon { flex-shrink: 0; font-size: 12px; margin-top: 1px; }
-  .meta-carry-note {
-    font-size: 11px;
-    color: var(--accent);
-    margin-top: 8px;
-    background: rgba(45,106,79,0.07);
-    border-radius: var(--radius-sm);
-    border-left: 2px solid var(--accent);
-    padding: 7px 12px;
-    line-height: 1.6;
-    display: flex;
-    align-items: flex-start;
-    gap: 6px;
-  }
+/* Input zone */
+.input-zone{background:var(--surface);border-radius:var(--radius);border:.5px solid var(--border);padding:14px 16px;margin-bottom:12px}
+.input-row{display:flex;gap:8px;align-items:stretch;flex-wrap:wrap}
+.input-amount{font-family:var(--mono);font-size:17px;border:none;outline:none;background:transparent;color:var(--text-primary);width:130px;padding:4px 0;border-bottom:1.5px solid var(--border-med)}
+.input-amount::placeholder{color:var(--text-hint);font-size:14px}
+.input-memo{font-family:var(--sans);font-size:13px;border:none;outline:none;background:transparent;color:var(--text-primary);flex:1;min-width:80px;padding:4px 0;border-bottom:1.5px solid var(--border-med)}
+.input-memo::placeholder{color:var(--text-hint)}
+.cat-btn-group{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap}
+.cat-btn{font-family:var(--sans);font-size:11px;padding:5px 11px;border-radius:20px;border:.5px solid var(--border-med);background:transparent;color:var(--text-secondary);cursor:pointer;transition:background .12s,color .12s,border-color .12s}
+.cat-btn:hover{background:#f0ede6}
+.cat-btn.cat-btn-active{font-weight:500}
+.btn-add{font-family:var(--sans);font-size:13px;font-weight:500;padding:8px 18px;background:var(--text-primary);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;margin-top:10px;width:100%;transition:opacity .15s}
+.btn-add:hover{opacity:.85}
 
-  /* ── 정기지출 카드 ── */
-  .recur-card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    border: 0.5px solid var(--border);
-    margin-bottom: 12px;
-    overflow: hidden;
-  }
-  .recur-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 18px;
-  }
-  .recur-header-left { display: flex; flex-direction: column; gap: 2px; }
-  .recur-label {
-    font-size: 11px;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    color: var(--text-hint);
-  }
-  .recur-total {
-    font-family: var(--mono);
-    font-size: 22px;
-    font-weight: 500;
-    color: var(--text-primary);
-  }
-  .recur-header-right { display: flex; align-items: center; gap: 10px; }
+/* Ledger */
+.ledger{background:var(--surface);border-radius:var(--radius);border:.5px solid var(--border);overflow:hidden;margin-bottom:12px}
+.ledger-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:.5px solid var(--border)}
+.ledger-title{font-size:12px;font-weight:500;color:var(--text-secondary)}
+.ledger-total{font-family:var(--mono);font-size:13px;color:var(--text-secondary)}
+.ledger-row{display:flex;align-items:center;padding:10px 16px;border-bottom:.5px solid var(--border);gap:10px;animation:fadeIn .2s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.ledger-row:last-child{border-bottom:none}
+.ledger-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.ledger-info{flex:1}
+.ledger-memo{font-size:13px}
+.ledger-cat{font-size:11px;color:var(--text-hint)}
+.ledger-amt{font-family:var(--mono);font-size:14px;font-weight:500;flex-shrink:0}
+.ledger-del{background:none;border:none;color:var(--text-hint);cursor:pointer;font-size:16px;padding:0 2px;line-height:1}
+.ledger-del:hover{color:var(--warn2)}
+.ledger-empty{padding:24px 16px;text-align:center;color:var(--text-hint);font-size:13px}
 
-  /* 차감 토글 */
-  .recur-toggle-wrap {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .recur-toggle-label { font-size: 11px; color: var(--text-secondary); }
-  .toggle-switch {
-    position: relative;
-    width: 36px; height: 20px;
-    flex-shrink: 0;
-  }
-  .toggle-switch input { opacity: 0; width: 0; height: 0; }
-  .toggle-slider {
-    position: absolute;
-    inset: 0;
-    background: #d4d0c8;
-    border-radius: 99px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .toggle-slider::before {
-    content: '';
-    position: absolute;
-    width: 14px; height: 14px;
-    left: 3px; top: 3px;
-    background: #fff;
-    border-radius: 50%;
-    transition: transform 0.2s;
-  }
-  .toggle-switch input:checked + .toggle-slider { background: #2d6a4f; }
-  .toggle-switch input:checked + .toggle-slider::before { transform: translateX(16px); }
+/* Fandom */
+.fandom-card{background:var(--surface);border-radius:var(--radius);border:.5px solid var(--border);padding:16px 20px;margin-bottom:12px}
+.fandom-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.fandom-amount{font-family:var(--mono);font-size:28px;font-weight:500;letter-spacing:-.5px;color:#9b4dca;transition:color .3s}
+.fandom-amount.warn1{color:var(--warn1)}.fandom-amount.warn2{color:var(--warn2)}
+.btn-fandom-set{font-family:var(--sans);font-size:11px;color:#9b4dca;background:#f5eeff;border:.5px solid rgba(155,77,202,.3);border-radius:20px;padding:4px 11px;cursor:pointer}
+.btn-fandom-set:hover{background:#ede0ff}
+.fandom-bar-bg{height:4px;background:#eeece8;border-radius:99px;overflow:hidden;margin-bottom:6px}
+.fandom-bar-fill{height:100%;border-radius:99px;background:#9b4dca;transition:width .3s}
+.fandom-bar-fill.warn1{background:var(--warn1)}.fandom-bar-fill.warn2{background:var(--warn2)}
+.fandom-numbers{display:flex;justify-content:space-between;font-size:11px;color:var(--text-hint);font-family:var(--mono)}
+.fandom-ledger{margin-top:10px;border-top:.5px solid var(--border);padding-top:10px}
+.fandom-ledger-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:.5px solid var(--border);animation:fadeIn .2s}
+.fandom-ledger-row:last-child{border-bottom:none}
+.fandom-ledger-memo{flex:1;font-size:13px}
+.fandom-ledger-date{font-size:11px;color:var(--text-hint)}
+.fandom-ledger-amt{font-family:var(--mono);font-size:13px;font-weight:500;color:#9b4dca;flex-shrink:0}
+.fandom-ledger-del{background:none;border:none;color:var(--text-hint);cursor:pointer;font-size:15px;padding:0;line-height:1}
+.fandom-ledger-del:hover{color:var(--warn2)}
+.fandom-ledger-empty{font-size:12px;color:var(--text-hint);padding:8px 0;text-align:center}
+.fandom-input-row{display:flex;gap:6px;margin-top:10px;align-items:center}
+.fandom-input-amt{font-family:var(--mono);font-size:14px;border:none;outline:none;background:transparent;color:var(--text-primary);width:110px;padding:4px 0;border-bottom:1.5px solid var(--border-med)}
+.fandom-input-amt::placeholder{color:var(--text-hint);font-size:12px}
+.fandom-input-memo{font-family:var(--sans);font-size:12px;border:none;outline:none;background:transparent;color:var(--text-primary);flex:1;padding:4px 0;border-bottom:1.5px solid var(--border-med)}
+.fandom-input-memo::placeholder{color:var(--text-hint)}
+.btn-fandom-add{font-family:var(--sans);font-size:12px;font-weight:500;padding:6px 14px;background:#9b4dca;color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;flex-shrink:0}
+.btn-fandom-add:hover{opacity:.85}
 
-  .btn-recur-edit {
-    font-family: var(--sans);
-    font-size: 11px;
-    color: var(--text-hint);
-    background: none;
-    border: 0.5px solid var(--border-med);
-    border-radius: 20px;
-    padding: 4px 11px;
-    cursor: pointer;
-    transition: background 0.12s;
-  }
-  .btn-recur-edit:hover { background: #f0ede6; }
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-sheet{background:var(--surface);border-radius:18px 18px 0 0;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding-bottom:40px}
+.modal-handle{width:36px;height:4px;background:var(--border-med);border-radius:99px;margin:12px auto 0}
+.modal-header{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:.5px solid var(--border)}
+.modal-title{font-size:15px;font-weight:600}
+.modal-close{background:none;border:none;font-size:22px;color:var(--text-hint);cursor:pointer;line-height:1}
+.modal-body{padding:16px 20px 0}
+.modal-field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.field-label{font-size:12px;color:var(--text-secondary)}
+.field-input{font-family:var(--sans);font-size:14px;border:none;border-bottom:1.5px solid var(--border-med);outline:none;background:transparent;color:var(--text-primary);padding:4px 0;width:100%}
+.field-input.mono{font-family:var(--mono);font-size:20px}
+.modal-btn{font-family:var(--sans);font-size:13px;font-weight:500;width:100%;padding:11px;background:var(--text-primary);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;margin-top:8px;display:block}
+.modal-btn:hover{opacity:.85}
+.modal-btn.accent{background:var(--accent)}
+.modal-btn.purple{background:#9b4dca}
+.modal-btn.teal{background:#2d8f6f}
+.modal-btn.dashed{background:none;color:var(--text-secondary);border:.5px dashed var(--border-med);margin-top:8px}
+.modal-btn.dashed:hover{background:#f0ede6}
+.edit-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.edit-row input,.edit-row select{font-family:var(--sans);font-size:13px;border:.5px solid var(--border-med);border-radius:var(--radius-sm);padding:8px 10px;outline:none;background:var(--bg);color:var(--text-primary)}
+.edit-row input.mono{font-family:var(--mono)}
+.edit-name{flex:1}.edit-amt{width:110px}.edit-cycle{width:72px;cursor:pointer}
+.edit-del{background:none;border:none;color:var(--text-hint);font-size:18px;cursor:pointer;padding:0;line-height:1}
+.edit-del:hover{color:var(--warn2)}
 
-  /* 차감 배지 */
-  .recur-deduct-badge {
-    font-size: 10px;
-    padding: 2px 8px;
-    border-radius: 99px;
-    font-weight: 500;
-    transition: all 0.2s;
-  }
-  .recur-deduct-badge.on  { background: #e8f5ee; color: #2d6a4f; }
-  .recur-deduct-badge.off { background: #f0ede6; color: var(--text-hint); }
+/* Asset modal specifics */
+.donut-wrap{display:flex;flex-direction:column;align-items:center;padding:20px 20px 8px;gap:2px}
+.donut-total-label{font-size:11px;color:var(--text-hint);letter-spacing:.4px;text-transform:uppercase}
+.donut-total-amt{font-family:var(--mono);font-size:28px;font-weight:500;letter-spacing:-.5px;margin-top:4px}
+.asset-legend{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 20px 16px}
+.legend-item{display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:var(--radius-sm);padding:8px 12px}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.legend-info{display:flex;flex-direction:column;gap:1px;min-width:0;overflow:hidden}
+.legend-name{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.legend-amt{font-family:var(--mono);font-size:11px;color:var(--text-secondary)}
+.legend-pct{font-size:10px;color:var(--text-hint)}
+.asset-edit-section{padding:16px 20px 0;border-top:.5px solid var(--border)}
+.asset-edit-title{font-size:12px;font-weight:500;color:var(--text-secondary);margin-bottom:10px}
+.asset-item-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.asset-item-row input{font-family:var(--sans);font-size:13px;border:.5px solid var(--border-med);border-radius:var(--radius-sm);padding:8px 10px;outline:none;background:var(--bg);color:var(--text-primary)}
+.asset-item-name{flex:1}.asset-item-amt{width:120px;font-family:var(--mono)!important}
+.asset-item-del{background:none;border:none;color:var(--text-hint);font-size:18px;cursor:pointer;padding:0;line-height:1}
+.asset-item-del:hover{color:var(--warn2)}
+.fixed-badge{font-size:9px;background:#e8f5ee;color:var(--accent);padding:2px 6px;border-radius:99px;flex-shrink:0;white-space:nowrap}
 
-  /* 항목 목록 */
-  .recur-list {
-    border-top: 0.5px solid var(--border);
-  }
-  .recur-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 9px 18px;
-    border-bottom: 0.5px solid var(--border);
-  }
-  .recur-item:last-child { border-bottom: none; }
-  .recur-item-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: #9b8ecf;
-    flex-shrink: 0;
-  }
-  .recur-item-name { flex: 1; font-size: 13px; color: var(--text-primary); }
-  .recur-item-cycle { font-size: 11px; color: var(--text-hint); }
-  .recur-item-amt {
-    font-family: var(--mono);
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-secondary);
-  }
-  .recur-empty {
-    padding: 18px;
-    text-align: center;
-    font-size: 12px;
-    color: var(--text-hint);
-    border-top: 0.5px solid var(--border);
-  }
-
-  /* 정기지출 편집 모달 */
-  .recur-modal-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.4); z-index: 300;
-    align-items: flex-end; justify-content: center;
-  }
-  .recur-modal-overlay.open { display: flex; }
-  .recur-modal {
-    background: var(--surface);
-    border-radius: 18px 18px 0 0;
-    width: 100%; max-width: 560px;
-    max-height: 85vh; overflow-y: auto;
-    padding: 0 0 40px;
-  }
-  .recur-modal-handle {
-    width: 36px; height: 4px;
-    background: var(--border-med);
-    border-radius: 99px;
-    margin: 12px auto 8px;
-  }
-  .recur-modal-header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 8px 20px 16px;
-    border-bottom: 0.5px solid var(--border);
-  }
-  .recur-modal-title { font-size: 15px; font-weight: 600; }
-  .recur-modal-close { background: none; border: none; font-size: 22px; color: var(--text-hint); cursor: pointer; line-height: 1; }
-  .recur-edit-list { padding: 12px 20px 0; }
-  .recur-edit-row {
-    display: flex; gap: 8px; align-items: center;
-    margin-bottom: 10px;
-  }
-  .recur-edit-row input {
-    font-family: var(--sans); font-size: 13px;
-    border: 0.5px solid var(--border-med);
-    border-radius: var(--radius-sm);
-    padding: 8px 10px; outline: none;
-    background: var(--bg); color: var(--text-primary);
-  }
-  .recur-edit-name { flex: 1; }
-  .recur-edit-amt  { width: 110px; font-family: var(--mono) !important; }
-  .recur-edit-cycle {
-    font-family: var(--sans); font-size: 12px;
-    border: 0.5px solid var(--border-med);
-    border-radius: var(--radius-sm);
-    padding: 8px 8px; outline: none;
-    background: var(--bg); color: var(--text-primary);
-    width: 72px; cursor: pointer;
-  }
-  .recur-edit-del { background: none; border: none; color: var(--text-hint); font-size: 18px; cursor: pointer; padding: 0; line-height: 1; }
-  .recur-edit-del:hover { color: var(--warn2); }
-  .btn-add-recur {
-    font-family: var(--sans); font-size: 12px; color: #7c5cbf;
-    background: none; border: 0.5px dashed #7c5cbf;
-    border-radius: var(--radius-sm); padding: 7px 14px;
-    cursor: pointer; margin: 8px 20px 0; width: calc(100% - 40px);
-    display: block;
-  }
-  .btn-save-recur {
-    font-family: var(--sans); font-size: 13px; font-weight: 500;
-    width: calc(100% - 40px); padding: 11px;
-    background: var(--text-primary); color: #fff;
-    border: none; border-radius: var(--radius-sm);
-    cursor: pointer; margin: 14px 20px 0; display: block;
-  }
-  .btn-save-recur:hover { opacity: 0.85; }
-
-  /* Link buttons */
-  .link-btn {
-    background: none;
-    border: none;
-    font-family: var(--sans);
-    font-size: 11px;
-    color: var(--text-hint);
-    cursor: pointer;
-    text-decoration: underline;
-    padding: 0;
-  }
-  .link-btn:hover { color: var(--text-secondary); }
-
-  /* Section row with action */
-  .section-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-    margin-top: 4px;
-  }
+/* Cat edit */
+.cat-edit-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.cat-edit-row input{font-family:var(--sans);font-size:13px;border:.5px solid var(--border-med);border-radius:var(--radius-sm);padding:8px 10px;outline:none;background:var(--bg);color:var(--text-primary)}
+.cat-edit-name{flex:1}.cat-edit-budget{width:100px;font-family:var(--mono)}
+.cat-del-btn{background:none;border:none;color:var(--text-hint);cursor:pointer;font-size:18px;padding:0}
+.cat-del-btn:hover{color:var(--warn2)}
+.modal-check{accent-color:var(--accent)}
+.cat-color-swatch{width:28px;height:28px;border-radius:50%;border:2px solid rgba(0,0,0,.1);cursor:pointer;flex-shrink:0;padding:0;outline:none;background:none;overflow:hidden;position:relative}
+.cat-color-swatch input[type=color]{position:absolute;inset:-4px;width:calc(100% + 8px);height:calc(100% + 8px);opacity:0;cursor:pointer;border:none;padding:0}
 </style>
 </head>
 <body>
 <div class="shell">
 
-  <!-- Header -->
-  <div class="header">
-    <div class="date-block">
-      <div class="date-main" id="dateMain">2025년 6월 1일 일요일</div>
-      <div class="date-sub" id="dateMonth">2025년 6월</div>
-    </div>
-    <button class="btn-reset" id="btnReset">월 마감 →</button>
-  </div>
-
-  <!-- Backup bar -->
-  <div class="backup-bar">
-    <button class="btn-backup import" id="btnImport">↑ 불러오기</button>
-    <button class="btn-backup" id="btnExport">↓ 내보내기</button>
-  </div>
-  <input type="file" id="importFile" accept=".json" style="display:none">
-
-  <!-- Toast -->
-  <div class="toast" id="toast"></div>
-
-  <!-- Total Asset Card -->
-  <div class="asset-card" id="assetCard">
-    <div class="asset-left">
-      <div class="asset-label">총자산</div>
-      <div class="asset-total" id="assetTotalDisplay">—</div>
-      <div class="asset-sub" id="assetSubDisplay">탭하여 자산 상세 보기</div>
-    </div>
-    <div class="asset-right">
-      <canvas id="assetMiniDonut" width="48" height="48"></canvas>
-      <div class="asset-arrow">›</div>
-    </div>
-  </div>
-
-  <!-- Asset detail modal -->
-  <div class="asset-modal-overlay" id="assetModalOverlay">
-    <div class="asset-modal">
-      <div class="asset-modal-handle"></div>
-      <div class="asset-modal-header">
-        <div class="asset-modal-title">자산 현황</div>
-        <button class="asset-modal-close" id="assetModalClose">×</button>
-      </div>
-      <!-- Donut chart -->
-      <div class="donut-wrap">
-        <canvas id="assetDonut" width="200" height="200"></canvas>
-        <div class="donut-total-label" style="margin-top:12px">총자산</div>
-        <div class="donut-total-amt" id="assetModalTotal">0원</div>
-      </div>
-      <!-- Legend -->
-      <div class="asset-legend" id="assetLegend"></div>
-      <!-- Edit section -->
-      <div class="asset-edit-section">
-        <div class="asset-edit-title">자산 항목 편집</div>
-        <div id="assetItemList"></div>
-        <button class="btn-add-asset-item" id="btnAddAssetItem">+ 항목 추가</button>
-        <button class="btn-save-asset" id="btnSaveAsset">저장</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Carryover banner -->
-  <div class="carryover-banner" id="carryoverBanner"></div>
-
-  <!-- Fandom budget card -->
-  <div class="fandom-card" id="fandomCard">
-    <div class="fandom-top">
-      <div class="fandom-left">
-        <div class="fandom-label" id="fandomLabel">덕질 예산</div>
-        <div class="fandom-amount" id="fandomRemaining">예산 미설정</div>
-      </div>
-      <div class="fandom-right">
-        <button class="btn-fandom-set" id="btnFandomSet">이번 달 예산 설정</button>
-        <div class="fandom-meta" id="fandomMeta"></div>
-      </div>
-    </div>
-    <div class="fandom-bar-bg" id="fandomBarWrap">
-      <div class="fandom-bar-fill" id="fandomBarFill" style="width:0%"></div>
-    </div>
-    <div class="fandom-numbers" id="fandomNumbers"></div>
-    <!-- Mini ledger -->
-    <div class="fandom-ledger">
-      <div class="fandom-input-row">
-        <input class="fandom-input-amt" type="number" id="fandomInputAmt" placeholder="금액">
-        <input class="fandom-input-memo" type="text" id="fandomInputMemo" placeholder="메모">
-        <button class="btn-fandom-add" id="btnFandomAdd">기록</button>
-      </div>
-      <div id="fandomLedgerBody"></div>
-    </div>
-  </div>
-
-  <!-- Fandom set modal -->
-  <div class="fandom-modal-overlay" id="fandomModalOverlay">
-    <div class="fandom-modal">
-      <button class="fandom-modal-close" id="fandomModalClose">×</button>
-      <div class="fandom-modal-title">덕질 예산 설정</div>
-      <div class="fandom-modal-sub">이번 달 일반 소비와 완전히 독립된 예산이에요</div>
-      <div class="fandom-set-row">
-        <div class="fandom-set-label">예산 이름 (예: 덕질, 최애, 굿즈)</div>
-        <input class="fandom-set-name-input" type="text" id="fandomNameInput" placeholder="덕질 예산" maxlength="12">
-      </div>
-      <div class="fandom-set-row">
-        <div class="fandom-set-label">이번 달 예산</div>
-        <input class="fandom-set-input" type="number" id="fandomBudgetInput" placeholder="0">
-      </div>
-      <button class="btn-fandom-confirm" id="btnFandomConfirm">저장</button>
-    </div>
-  </div>
-
-  <!-- #1 Monthly total spending card -->
-  <div class="monthly-total-card">
-    <div class="monthly-total-left">
-      <div class="monthly-total-label">이번 달 총 소비액</div>
-      <div class="monthly-total-amt" id="monthlyTotalAmt">0원</div>
-    </div>
-    <div class="monthly-total-right" id="monthlyTotalRight"></div>
-  </div>
-
-  <!-- 정기지출 카드 -->
-  <div class="recur-card">
-    <div class="recur-header">
-      <div class="recur-header-left">
-        <div class="recur-label">정기지출</div>
-        <div class="recur-total" id="recurTotal">0원 / 월</div>
-      </div>
-      <div class="recur-header-right">
-        <div class="recur-toggle-wrap">
-          <span class="recur-toggle-label">예산 차감</span>
-          <label class="toggle-switch">
-            <input type="checkbox" id="recurDeductToggle">
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-        <span class="recur-deduct-badge off" id="recurDeductBadge">차감 안 함</span>
-        <button class="btn-recur-edit" id="btnRecurEdit">편집</button>
-      </div>
-    </div>
-    <div class="recur-list" id="recurList"></div>
-  </div>
-
-  <!-- 정기지출 편집 모달 -->
-  <div class="recur-modal-overlay" id="recurModalOverlay">
-    <div class="recur-modal">
-      <div class="recur-modal-handle"></div>
-      <div class="recur-modal-header">
-        <div class="recur-modal-title">정기지출 편집</div>
-        <button class="recur-modal-close" id="recurModalClose">×</button>
-      </div>
-      <div class="recur-edit-list" id="recurEditList"></div>
-      <button class="btn-add-recur" id="btnAddRecur">+ 항목 추가</button>
-      <button class="btn-save-recur" id="btnSaveRecur">저장</button>
-    </div>
-  </div>
-
-  <!-- Budget hero -->
-  <div class="budget-hero">
-    <div class="budget-label">이번 달 선택 가능 금액</div>
-    <div class="budget-amount" id="budgetAmount">250,000원</div>
-    <div class="budget-status" id="budgetStatus">여유 있어요 · 마음껏 선택하세요</div>
-    <hr class="budget-divider">
-    <div class="budget-meta">
-      <div class="meta-item"><span>한도</span><span id="metaLimit">250,000원</span></div>
-      <div class="meta-item"><span>사용</span><span id="metaUsed">0원</span></div>
-      <div class="meta-item"><span>이월잔액</span><span id="metaCarry">0원</span></div>
-    </div>
-    <div class="meta-deduct-note" id="metaDeductNote" style="display:none">
-      <span class="meta-deduct-icon">⚠</span>
-      <span id="metaDeductText"></span>
-    </div>
-    <div class="meta-carry-note" id="metaCarryNote" style="display:none">
-      <span class="meta-deduct-icon">↓</span>
-      <span id="metaCarryText"></span>
-    </div>
-  </div>
-
-  <!-- Category bars -->
-  <div class="section-row">
-    <div class="section-title" style="margin:0">카테고리별</div>
-    <button class="link-btn" id="btnEditCat">카테고리 수정</button>
-  </div>
-  <div class="cat-list" id="catList"></div>
-
-  <!-- Input zone -->
-  <div class="input-zone">
-    <div class="input-row">
-      <input class="input-amount" type="number" id="inputAmt" placeholder="금액" min="0">
-      <input class="input-memo" type="text" id="inputMemo" placeholder="메모 (선택)">
-    </div>
-    <div class="cat-btn-group" id="catBtnGroup"></div>
-    <button class="btn-add" id="btnAdd">기록하기</button>
-  </div>
-
-  <!-- Ledger -->
-  <div class="section-title">소비 내역</div>
-  <div class="ledger">
-    <div class="ledger-header">
-      <div class="ledger-title">이번 달</div>
-      <div class="ledger-total" id="ledgerTotal">합계 0원</div>
-    </div>
-    <div id="ledgerBody"></div>
-  </div>
-
+<!-- Header -->
+<div class="header">
+  <div><div class="date-main" id="dateMain"></div><div class="date-sub" id="dateMonth"></div></div>
+  <button class="btn-reset" id="btnReset">월 마감 →</button>
 </div>
 
-<!-- Category edit modal -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <button class="modal-close" id="modalClose">×</button>
-    <div class="modal-title">카테고리 설정</div>
-    <div id="catEditList"></div>
-    <button class="btn-add-cat" id="btnAddCat">+ 카테고리 추가</button>
-    <div style="margin-top:12px; font-size:12px; color:var(--text-hint);">
-      이월 허용 체크시 남은 금액이 다음 달로 이월됩니다
-    </div>
-    <button class="modal-save" id="btnSaveCat">저장</button>
+<!-- Backup -->
+<div class="backup-bar">
+  <button class="btn-backup import" id="btnImport">↑ 불러오기</button>
+  <button class="btn-backup" id="btnExport">↓ 내보내기</button>
+</div>
+<input type="file" id="importFile" accept=".json" style="display:none">
+<div class="toast" id="toast"></div>
+
+<!-- 총자산 -->
+<div class="card asset-card-wrap" id="assetCard">
+  <div>
+    <div class="section-label">총자산</div>
+    <div class="asset-total" id="assetTotalDisplay">—</div>
+    <div class="asset-sub" id="assetSubDisplay">탭하여 자산 상세 보기</div>
   </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <canvas id="assetMiniDonut" width="48" height="48"></canvas>
+    <span style="font-size:16px;color:var(--text-hint)">›</span>
+  </div>
+</div>
+
+<!-- 총자산 모달 -->
+<div class="modal-overlay" id="assetModalOverlay">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header"><div class="modal-title">자산 현황</div><button class="modal-close" id="assetModalClose">×</button></div>
+    <div class="donut-wrap">
+      <canvas id="assetDonut" width="200" height="200"></canvas>
+      <div class="donut-total-label" style="margin-top:12px">총자산</div>
+      <div class="donut-total-amt" id="assetModalTotal">0원</div>
+    </div>
+    <div class="asset-legend" id="assetLegend"></div>
+    <div class="asset-edit-section">
+      <div class="asset-edit-title">자산 항목 편집</div>
+      <div id="assetItemList"></div>
+      <button class="modal-btn dashed" id="btnAddAssetItem" style="width:100%">+ 항목 추가</button>
+      <button class="modal-btn" id="btnSaveAsset" style="margin-top:12px">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 수입 -->
+<div class="card income-wrap">
+  <div style="flex:1">
+    <div class="section-label" style="margin-bottom:3px">이번 달 수입</div>
+    <div class="income-amount" id="incomeAmount">미설정</div>
+    <div class="income-sub" id="incomeSub">버튼을 눌러 수입을 입력하세요</div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+    <div class="income-pct" id="incomePct">—</div>
+    <div class="income-stat" id="incomeStat"></div>
+    <button class="btn-income-set" id="btnIncomeSet">수입 설정</button>
+  </div>
+</div>
+
+<!-- 수입 모달 -->
+<div class="modal-overlay" id="incomeModalOverlay">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header"><div class="modal-title">수입 설정</div><button class="modal-close" id="incomeModalClose">×</button></div>
+    <div class="modal-body">
+      <div class="modal-field"><div class="field-label">수입 이름 (예: 용돈, 월급)</div><input class="field-input" type="text" id="incomeNameInput" placeholder="이번 달 수입" maxlength="12"></div>
+      <div class="modal-field"><div class="field-label">금액</div><input class="field-input mono" type="number" id="incomeAmtInput" placeholder="0"></div>
+      <button class="modal-btn accent" id="btnIncomeConfirm">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 총 소비액 -->
+<div class="monthly-total-card">
+  <div>
+    <div class="monthly-total-label">이번 달 총 소비액</div>
+    <div class="monthly-total-amt" id="monthlyTotalAmt">0원</div>
+  </div>
+  <div id="monthlyTotalRight" style="display:flex;flex-direction:column;align-items:flex-end;gap:5px"></div>
+</div>
+
+<!-- 정기지출 -->
+<div class="panel">
+  <div class="panel-header">
+    <div><div class="section-label">정기지출</div><div class="panel-total" id="recurTotal">항목 없음</div></div>
+    <div class="panel-controls">
+      <div class="toggle-wrap">
+        <span class="toggle-label">예산 차감</span>
+        <label class="toggle-sw"><input type="checkbox" id="recurDeductToggle"><span class="toggle-sl"></span></label>
+      </div>
+      <span class="deduct-badge off" id="recurDeductBadge">차감 안 함</span>
+      <button class="btn-panel-edit" id="btnRecurEdit">편집</button>
+    </div>
+  </div>
+  <div id="recurList"></div>
+</div>
+
+<!-- 정기지출 모달 -->
+<div class="modal-overlay" id="recurModalOverlay">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header"><div class="modal-title">정기지출 편집</div><button class="modal-close" id="recurModalClose">×</button></div>
+    <div class="modal-body">
+      <div id="recurEditList"></div>
+      <button class="modal-btn dashed" id="btnAddRecur">+ 항목 추가</button>
+      <button class="modal-btn" id="btnSaveRecur" style="margin-top:12px">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 예적금 -->
+<div class="panel">
+  <div class="panel-header">
+    <div><div class="section-label">예적금</div><div class="panel-total teal" id="savingsTotal">항목 없음</div></div>
+    <div class="panel-controls"><button class="btn-panel-edit" id="btnSavingsEdit">편집</button></div>
+  </div>
+  <div id="savingsList"></div>
+</div>
+
+<!-- 예적금 모달 -->
+<div class="modal-overlay" id="savingsModalOverlay">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header"><div class="modal-title">예적금 편집</div><button class="modal-close" id="savingsModalClose">×</button></div>
+    <div class="modal-body">
+      <div style="font-size:12px;color:var(--text-hint);margin-bottom:14px;line-height:1.6">납입 기록 시 → 총자산의 <b>유동자산</b>에서 차감, 해당 항목 잔액 증가</div>
+      <div id="savingsEditList"></div>
+      <button class="modal-btn dashed" id="btnAddSavings">+ 항목 추가</button>
+      <button class="modal-btn teal" id="btnSaveSavings" style="margin-top:12px">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 이월 배너 -->
+<div class="carryover-banner" id="carryoverBanner"></div>
+
+<!-- 선택 가능 금액 -->
+<div class="budget-hero">
+  <div class="budget-label">이번 달 선택 가능 금액</div>
+  <div class="budget-amount" id="budgetAmount">—</div>
+  <div class="budget-status" id="budgetStatus"></div>
+  <hr class="budget-divider">
+  <div class="budget-meta">
+    <div class="meta-item"><span>한도</span><span id="metaLimit">—</span></div>
+    <div class="meta-item"><span>사용</span><span id="metaUsed">—</span></div>
+    <div class="meta-item"><span>이월잔액</span><span id="metaCarry">—</span></div>
+  </div>
+  <div id="metaDeductNote" style="display:none"></div>
+  <div id="metaCarryNote" style="display:none"></div>
+</div>
+
+<!-- 카테고리 -->
+<div class="section-row">
+  <div class="section-label">카테고리별</div>
+  <button class="link-btn" id="btnEditCat">카테고리 수정</button>
+</div>
+<div class="cat-list" id="catList"></div>
+
+<!-- 입력 -->
+<div class="input-zone">
+  <div class="input-row">
+    <input class="input-amount" type="number" id="inputAmt" placeholder="금액" min="0">
+    <input class="input-memo" type="text" id="inputMemo" placeholder="메모 (선택)">
+  </div>
+  <div class="cat-btn-group" id="catBtnGroup"></div>
+  <button class="btn-add" id="btnAdd">기록하기</button>
+</div>
+
+<!-- 소비 내역 -->
+<div class="section-label" style="margin-bottom:8px">소비 내역</div>
+<div class="ledger">
+  <div class="ledger-header">
+    <div class="ledger-title">이번 달</div>
+    <div class="ledger-total" id="ledgerTotal">합계 0원</div>
+  </div>
+  <div id="ledgerBody"></div>
+</div>
+
+<!-- 덕질 예산 -->
+<div class="fandom-card">
+  <div class="fandom-top">
+    <div>
+      <div class="section-label" id="fandomLabel">덕질 예산</div>
+      <div class="fandom-amount" id="fandomRemaining">예산 미설정</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+      <button class="btn-fandom-set" id="btnFandomSet">이번 달 예산 설정</button>
+      <div style="font-size:11px;color:var(--text-hint);font-family:var(--mono)" id="fandomMeta"></div>
+    </div>
+  </div>
+  <div class="fandom-bar-bg"><div class="fandom-bar-fill" id="fandomBarFill" style="width:0%"></div></div>
+  <div class="fandom-numbers" id="fandomNumbers"></div>
+  <div class="fandom-ledger">
+    <div class="fandom-input-row">
+      <input class="fandom-input-amt" type="number" id="fandomInputAmt" placeholder="금액">
+      <input class="fandom-input-memo" type="text" id="fandomInputMemo" placeholder="메모">
+      <button class="btn-fandom-add" id="btnFandomAdd">기록</button>
+    </div>
+    <div id="fandomLedgerBody"></div>
+  </div>
+</div>
+
+<!-- 덕질 모달 -->
+<div class="modal-overlay" id="fandomModalOverlay">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header"><div class="modal-title">덕질 예산 설정</div><button class="modal-close" id="fandomModalClose">×</button></div>
+    <div class="modal-body">
+      <div class="modal-field"><div class="field-label">예산 이름</div><input class="field-input" type="text" id="fandomNameInput" placeholder="덕질 예산" maxlength="12"></div>
+      <div class="modal-field"><div class="field-label">이번 달 예산</div><input class="field-input mono" type="number" id="fandomBudgetInput" placeholder="0"></div>
+      <button class="modal-btn purple" id="btnFandomConfirm">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 카테고리 모달 -->
+<div class="modal-overlay" id="catModalOverlay">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header"><div class="modal-title">카테고리 설정</div><button class="modal-close" id="catModalClose">×</button></div>
+    <div class="modal-body">
+      <div id="catEditList"></div>
+      <button class="modal-btn dashed" id="btnAddCat">+ 카테고리 추가</button>
+      <div style="margin-top:10px;font-size:11px;color:var(--text-hint)">이월 허용 체크 시 남은 금액이 다음 달로 이월됩니다</div>
+      <button class="modal-btn" id="btnSaveCat" style="margin-top:12px">저장</button>
+    </div>
+  </div>
+</div>
+
 </div>
 
 <script>
-// ─── 기본 카테고리 설정 ───
+// ── 상수 ──
+const KEYS = { state:'bcs_state_v2', assets:'bcs_assets_v1', fandom:'bcs_fandom_v1', recur:'bcs_recur_v1', savings:'bcs_savings_v1', income:'bcs_income_v1' };
+const ASSET_PALETTE = ['#2563a8','#2d8f6f','#a85c2d','#7c3a9e','#b34a4a','#4a7a4a','#8a6a2a','#3a6a8a'];
+const MAX_CARRY = 300000;
 const DEFAULT_CATS = [
-  { id: 'food',          name: '식비',   budget: 100000, carryover: false, color: '#1a6fa8' },
-  { id: 'hobby_variable',name: '쇼핑',   budget: 50000,  carryover: true,  color: '#6d4fa8' },
-  { id: 'hobby_select',  name: '기타',   budget: 100000, carryover: true,  color: '#a8724f' },
+  {id:'food',name:'식비',budget:100000,carryover:false,color:'#1a6fa8'},
+  {id:'hobby_variable',name:'쇼핑',budget:50000,carryover:true,color:'#6d4fa8'},
+  {id:'hobby_select',name:'기타',budget:100000,carryover:true,color:'#a8724f'},
 ];
-const MAX_CARRYOVER = 300000; // 최대 이월 30만
+const DAYS = ['일','월','화','수','목','금','토'];
 
-// ─── localStorage 키 ───
-const KEY_STATE = 'bcs_state_v2';
+// ── 유틸 ──
+const fmt  = n => Math.abs(n).toLocaleString('ko-KR')+'원';
+const fmtS = n => (n<0?'-':'')+fmt(n);
+const todayStr = () => { const n=new Date(); return `${n.getMonth()+1}/${n.getDate()}`; };
+const el = id => document.getElementById(id);
 
-// ─── 상태 구조 ───
-function defaultState() {
-  const now = new Date();
-  return {
-    month: now.getFullYear() * 100 + (now.getMonth() + 1),
-    categories: JSON.parse(JSON.stringify(DEFAULT_CATS)),
-    carryover: 0,      // 이전 달에서 가져온 이월 금액 (양수=남음, 음수=초과)
-    entries: [],
-  };
+function showToast(msg) {
+  const t=el('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
 }
 
-function loadState() {
-  try {
-    const raw = localStorage.getItem(KEY_STATE);
-    if (!raw) return defaultState();
-    return JSON.parse(raw);
-  } catch(e) { return defaultState(); }
+function openModal(id)  { el(id).classList.add('open'); }
+function closeModal(id) { el(id).classList.remove('open'); }
+function initModalClose(overlayId, closeBtnId) {
+  el(closeBtnId).onclick = ()=>closeModal(overlayId);
+  el(overlayId).onclick  = e=>{ if(e.target===el(overlayId)) closeModal(overlayId); };
 }
 
-function saveState(state) {
-  localStorage.setItem(KEY_STATE, JSON.stringify(state));
+// ── 스토리지 ──
+function load(key, def) {
+  try { const r=localStorage.getItem(key); return r?JSON.parse(r):def(); }
+  catch(e) { return def(); }
 }
+const save = (key,val) => localStorage.setItem(key,JSON.stringify(val));
 
-// ─── 계산 헬퍼 ───
-function totalBudget(state) {
-  return state.categories.reduce((s, c) => s + c.budget, 0);
+const defaultState = () => { const n=new Date(); return {month:n.getFullYear()*100+(n.getMonth()+1),categories:JSON.parse(JSON.stringify(DEFAULT_CATS)),carryover:0,entries:[]}; };
+const loadState   = () => load(KEYS.state,   defaultState);
+const saveState   = s  => save(KEYS.state, s);
+const loadAssets  = () => load(KEYS.assets,  () => []);
+const saveAssets  = a  => save(KEYS.assets, a);
+const loadFandom  = () => load(KEYS.fandom,  () => ({name:'덕질 예산',budget:0,entries:[]}));
+const saveFandom  = f  => save(KEYS.fandom, f);
+const loadRecur   = () => load(KEYS.recur,   () => ({deduct:false,items:[]}));
+const saveRecur   = r  => save(KEYS.recur, r);
+const loadSavings = () => load(KEYS.savings, () => ({items:[]}));
+const saveSavings = s  => save(KEYS.savings, s);
+const loadIncome  = () => load(KEYS.income,  () => ({name:'',amount:0}));
+const saveIncome  = i  => save(KEYS.income, i);
+
+// ── 계산 ──
+const totalBudget = state => state.categories.reduce((s,c)=>s+c.budget,0);
+const totalUsed   = state => state.entries.reduce((s,e)=>s+e.amount,0);
+const fandomUsed  = f     => f.entries.reduce((s,e)=>s+e.amount,0);
+
+function toMonthly(amount, cycle) {
+  if(cycle==='weekly') return Math.round(amount*52/12);
+  if(cycle==='yearly') return Math.round(amount/12);
+  return amount;
 }
+function cycleLabel(item) {
+  if(item.cycle==='weekly') return `주 ${fmt(item.amount)}`;
+  if(item.cycle==='yearly') return `연 ${fmt(item.amount)}`;
+  return '매월';
+}
+const recurMonthlyTotal  = r  => r.items.reduce((s,i)=>s+toMonthly(i.amount,i.cycle),0);
+const savingsMonthlyTotal= sv => sv.items.reduce((s,i)=>s+toMonthly(i.amount,i.cycle),0);
+const savingsTotalBalance= sv => sv.items.reduce((s,i)=>s+(i.balance||0),0);
 
 function usedByCategory(state) {
-  const map = {};
-  state.categories.forEach(c => { map[c.id] = 0; });
-  state.entries.forEach(e => { if (map[e.catId] !== undefined) map[e.catId] += e.amount; });
+  const map={}; state.categories.forEach(c=>{map[c.id]=0;});
+  state.entries.forEach(e=>{ if(map[e.catId]!==undefined) map[e.catId]+=e.amount; });
   return map;
 }
-
-function totalUsed(state) {
-  return state.entries.reduce((s, e) => s + e.amount, 0);
-}
-
 function effectiveLimit(state) {
-  // 총 한도 + 이월 잔액 - 정기지출(차감 ON일 때)
-  const base = totalBudget(state) + state.carryover;
-  const r = loadRecur();
-  const recurDeduct = r.deduct ? recurMonthlyTotal(r) : 0;
-  return base - recurDeduct;
+  const r=loadRecur();
+  return totalBudget(state)+state.carryover-(r.deduct?recurMonthlyTotal(r):0);
 }
+const remaining = state => effectiveLimit(state)-totalUsed(state);
 
-function remaining(state) {
-  return effectiveLimit(state) - totalUsed(state);
-}
-
-// ─── 날짜 표시 ───
-const DAYS = ['일','월','화','수','목','금','토'];
+// ── 날짜 ──
 function renderDate() {
-  const now = new Date();
-  const y = now.getFullYear(), m = now.getMonth()+1, d = now.getDate();
-  const day = DAYS[now.getDay()];
-  document.getElementById('dateMain').textContent = `${y}년 ${m}월 ${d}일 ${day}요일`;
-  document.getElementById('dateMonth').textContent = `${y}년 ${m}월`;
+  const n=new Date();
+  el('dateMain').textContent=`${n.getFullYear()}년 ${n.getMonth()+1}월 ${n.getDate()}일 ${DAYS[n.getDay()]}요일`;
+  el('dateMonth').textContent=`${n.getFullYear()}년 ${n.getMonth()+1}월`;
 }
 
-// ─── UI 렌더 ───
-function fmt(n) { return Math.abs(n).toLocaleString('ko-KR') + '원'; }
-function fmtSigned(n) { return (n < 0 ? '-' : '') + fmt(n); }
-
-function renderBudgetHero(state) {
-  const lim = effectiveLimit(state);
-  const rem = remaining(state);
-  const amtEl = document.getElementById('budgetAmount');
-  const statusEl = document.getElementById('budgetStatus');
-  const ratio = lim > 0 ? rem / lim : 0;
-
-  amtEl.textContent = fmtSigned(rem);
-  amtEl.className = 'budget-amount';
-
-  if (rem < 0) {
-    amtEl.classList.add('warn2');
-    statusEl.textContent = '한도 초과 · 잠깐, 다시 생각해볼까요';
-  } else if (ratio < 0.25) {
-    amtEl.classList.add('warn2');
-    statusEl.textContent = '위험 · 선택지가 많지 않아요';
-  } else if (ratio < 0.5) {
-    amtEl.classList.add('warn1');
-    statusEl.textContent = '보통 · 신중하게 선택해요';
-  } else {
-    statusEl.textContent = '여유 있어요 · 마음껏 선택하세요';
+// ── 도넛 ──
+function drawDonut(canvasId, items, opts={}) {
+  const canvas=el(canvasId); if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const total=items.reduce((s,i)=>s+(i.amount||0),0);
+  const cx=canvas.width/2, cy=canvas.height/2;
+  const r=opts.r||(canvas.width/2-4), ir=opts.ir||r*.58, gap=opts.gap||.025;
+  if(!total||!items.length) {
+    ctx.beginPath();ctx.arc(cx,cy,(r+ir)/2,0,Math.PI*2);
+    ctx.strokeStyle='#e8e6e0';ctx.lineWidth=r-ir;ctx.stroke();return;
   }
-
-  document.getElementById('metaLimit').textContent = fmt(lim);
-  document.getElementById('metaUsed').textContent = fmt(totalUsed(state));
-  document.getElementById('metaCarry').textContent = (state.carryover >= 0 ? '+' : '') + fmtSigned(state.carryover);
-
-  // #2 차감/이월 안내 노트 — 더 직관적으로
-  const deductNote = document.getElementById('metaDeductNote');
-  const carryNote  = document.getElementById('metaCarryNote');
-  const overAmt = totalUsed(state) - effectiveLimit(state);
-
-  if (overAmt > 0) {
-    // 현재 초과 중 → 다음 달 차감 예고
-    deductNote.style.display = 'flex';
-    document.getElementById('metaDeductText').textContent =
-      `한도 ${fmt(overAmt)} 초과 중 · 월 마감 시 다음 달 선택 가능 금액에서 ${fmt(overAmt)} 차감됩니다`;
-    carryNote.style.display = 'none';
-  } else if (state.carryover < 0) {
-    // 이미 지난 달 초과분이 이번 달에 차감된 상태
-    deductNote.style.display = 'flex';
-    document.getElementById('metaDeductText').textContent =
-      `지난 달 초과분 ${fmt(-state.carryover)} 차감 적용 중 · 한도가 ${fmt(-state.carryover)} 줄어든 상태예요`;
-    carryNote.style.display = 'none';
-  } else {
-    deductNote.style.display = 'none';
-    // 이월 중인 경우 초록 안내
-    if (state.carryover > 0) {
-      carryNote.style.display = 'flex';
-      document.getElementById('metaCarryText').textContent =
-        `지난 달 절약분 ${fmt(state.carryover)} 이월 적용 중 · 한도가 그만큼 늘어났어요`;
-    } else {
-      carryNote.style.display = 'none';
-    }
-  }
-
-  // carryover banner
-  const banner = document.getElementById('carryoverBanner');
-  if (state.carryover !== 0) {
-    banner.classList.add('visible');
-    if (state.carryover > 0) {
-      banner.textContent = `지난 달 절약분 +${fmt(state.carryover)} 이월됨`;
-    } else {
-      banner.textContent = `지난 달 초과분 ${fmtSigned(state.carryover)} 차감됨`;
-    }
-  } else {
-    banner.classList.remove('visible');
-  }
-}
-
-function renderCatList(state) {
-  const used = usedByCategory(state);
-  const container = document.getElementById('catList');
-  container.innerHTML = '';
-  state.categories.forEach(c => {
-    const u = used[c.id] || 0;
-    const avail = c.budget - u;
-    const pct = c.budget > 0 ? Math.min(100, (u / c.budget) * 100) : 0;
-    const card = document.createElement('div');
-    card.className = 'cat-card';
-    card.innerHTML = `
-      <div class="cat-header">
-        <div class="cat-name">
-          <span class="cat-dot" style="background:${c.color}"></span>
-          ${c.name}
-        </div>
-        <div class="cat-available" style="color:${avail < 0 ? 'var(--warn2)' : 'var(--text-secondary)'}">
-          ${avail >= 0 ? '선택 가능 ' + fmt(avail) : '초과 ' + fmt(-avail)}
-        </div>
-      </div>
-      <div class="cat-bar-bg">
-        <div class="cat-bar-fill" style="width:${pct}%;background:${c.color}"></div>
-      </div>
-      <div class="cat-numbers">
-        <span>${fmt(u)} 사용</span>
-        <span>한도 ${fmt(c.budget)}</span>
-      </div>
-    `;
-    container.appendChild(card);
+  let angle=-Math.PI/2;
+  items.forEach((item,i)=>{
+    const slice=(item.amount/total)*Math.PI*2;
+    ctx.beginPath();ctx.arc(cx,cy,(r+ir)/2,angle+gap,angle+slice-gap);
+    ctx.strokeStyle=ASSET_PALETTE[i%ASSET_PALETTE.length];ctx.lineWidth=r-ir;ctx.lineCap='round';ctx.stroke();
+    angle+=slice;
   });
 }
 
-function hexToRgb(hex) {
-  const r = parseInt(hex.slice(1,3),16);
-  const g = parseInt(hex.slice(3,5),16);
-  const b = parseInt(hex.slice(5,7),16);
-  return `${r},${g},${b}`;
+// ── 총자산 ──
+function ensureLiquid(items) {
+  if(!items.find(i=>i.fixed)) items.unshift({name:'유동자산',amount:0,fixed:true});
+  return items;
+}
+function renderAssetCard(items) {
+  const total=items.reduce((s,i)=>s+(i.amount||0),0);
+  el('assetTotalDisplay').textContent=total>0?total.toLocaleString('ko-KR')+'원':'—';
+  el('assetSubDisplay').textContent=items.length>0?`${items.length}개 항목 · 탭하여 상세 보기`:'탭하여 자산 입력';
+  drawDonut('assetMiniDonut',items,{r:22,ir:13,gap:.04});
+}
+function renderAssetModal(items) {
+  const total=items.reduce((s,i)=>s+(i.amount||0),0);
+  el('assetModalTotal').textContent=total>0?total.toLocaleString('ko-KR')+'원':'0원';
+  drawDonut('assetDonut',items,{r:88,ir:52,gap:.03});
+  const legend=el('assetLegend'); legend.innerHTML='';
+  items.forEach((item,i)=>{
+    const color=ASSET_PALETTE[i%ASSET_PALETTE.length];
+    const pct=total>0?((item.amount/total)*100).toFixed(1):'0.0';
+    const d=document.createElement('div'); d.className='legend-item';
+    d.innerHTML=`<div class="legend-dot" style="background:${color}"></div>
+      <div class="legend-info">
+        <div class="legend-name">${item.name}${item.fixed?'<span style="font-size:9px;background:#e8f5ee;color:#2d6a4f;padding:1px 5px;border-radius:99px;margin-left:4px;font-weight:400">고정</span>':''}</div>
+        <div class="legend-amt">${(item.amount||0).toLocaleString('ko-KR')}원</div>
+        <div class="legend-pct">${pct}%</div>
+      </div>`;
+    legend.appendChild(d);
+  });
+}
+function renderAssetEditList(items) {
+  const list=el('assetItemList'); list.innerHTML='';
+  items.forEach((item,i)=>{
+    const color=ASSET_PALETTE[i%ASSET_PALETTE.length];
+    const row=document.createElement('div'); row.className='asset-item-row'; row.dataset.idx=i;
+    const dot=`<div style="width:10px;height:10px;border-radius:50%;background:${color};flex-shrink:0"></div>`;
+    if(item.fixed) {
+      row.innerHTML=`${dot}<input class="asset-item-name" type="text" value="${item.name}" readonly style="opacity:.6;cursor:default"><input class="asset-item-amt" type="number" value="${item.amount||0}" placeholder="금액"><span class="fixed-badge">고정</span>`;
+    } else {
+      row.innerHTML=`${dot}<input class="asset-item-name" type="text" value="${item.name}" placeholder="항목명"><input class="asset-item-amt" type="number" value="${item.amount||0}" placeholder="금액"><button class="asset-item-del">×</button>`;
+      row.querySelector('.asset-item-del').onclick=()=>{ items.splice(i,1); renderAssetEditList(items); renderAssetModal(items); };
+    }
+    const ni=row.querySelector('.asset-item-name'), ai=row.querySelector('.asset-item-amt');
+    if(ni&&!item.fixed) ni.oninput=()=>{item.name=ni.value;renderAssetModal(items);};
+    if(ai) ai.oninput=()=>{item.amount=parseInt(ai.value)||0;renderAssetModal(items);};
+    list.appendChild(row);
+  });
+}
+function initAsset() {
+  let items=ensureLiquid(loadAssets()); saveAssets(items);
+  const refresh=()=>{ renderAssetCard(items); renderAssetModal(items); renderAssetEditList(items); };
+  el('assetCard').onclick=()=>{ items=ensureLiquid(loadAssets()); refresh(); openModal('assetModalOverlay'); };
+  initModalClose('assetModalOverlay','assetModalClose');
+  el('btnAddAssetItem').onclick=()=>{ items.push({name:'',amount:0}); renderAssetEditList(items); renderAssetModal(items); };
+  el('btnSaveAsset').onclick=()=>{
+    const rows=el('assetItemList').querySelectorAll('.asset-item-row');
+    const updated=[];
+    rows.forEach(row=>{
+      const idx=parseInt(row.dataset.idx), orig=items[idx]||{};
+      const name=row.querySelector('.asset-item-name').value.trim()||'항목';
+      const amount=parseInt(row.querySelector('.asset-item-amt').value)||0;
+      updated.push({...orig,name,amount});
+    });
+    items=updated; saveAssets(items); renderAssetCard(items); closeModal('assetModalOverlay'); showToast('자산을 저장했어요');
+  };
+  refresh();
+}
+function adjustLiquid(delta) {
+  const items=ensureLiquid(loadAssets());
+  const liq=items.find(i=>i.fixed);
+  if(liq){ liq.amount=Math.max(0,(liq.amount||0)+delta); saveAssets(items); renderAssetCard(items); }
 }
 
+// ── 수입 ──
+function renderIncome() {
+  const inc=loadIncome(), state=loadState(), f=loadFandom(), r=loadRecur(), sv=loadSavings();
+  const spend=totalUsed(state)+fandomUsed(f)+(r.deduct?recurMonthlyTotal(r):0)+savingsMonthlyTotal(sv);
+  if(!inc.amount){
+    el('incomeAmount').textContent='미설정'; el('incomeSub').textContent='버튼을 눌러 수입을 입력하세요';
+    el('incomePct').textContent='—'; el('incomePct').className='income-pct'; el('incomeStat').textContent=''; return;
+  }
+  el('incomeAmount').textContent=inc.amount.toLocaleString('ko-KR')+'원';
+  el('incomeSub').textContent=inc.name||'이번 달 수입';
+  const pct=Math.round((spend/inc.amount)*100);
+  el('incomePct').textContent=pct+'%';
+  el('incomePct').className='income-pct '+(pct>=90?'warn2':pct>=70?'warn1':'safe');
+  el('incomeStat').textContent=`${spend.toLocaleString('ko-KR')}원 지출`;
+}
+function initIncome() {
+  el('btnIncomeSet').onclick=()=>{ const inc=loadIncome(); el('incomeNameInput').value=inc.name||''; el('incomeAmtInput').value=inc.amount||''; openModal('incomeModalOverlay'); };
+  initModalClose('incomeModalOverlay','incomeModalClose');
+  el('btnIncomeConfirm').onclick=()=>{
+    saveIncome({name:el('incomeNameInput').value.trim(),amount:parseInt(el('incomeAmtInput').value)||0});
+    renderIncome(); closeModal('incomeModalOverlay'); showToast('수입을 저장했어요');
+  };
+  renderIncome();
+}
+
+// ── 총 소비액 ──
+function renderMonthlyTotal(state) {
+  const general=totalUsed(state), f=loadFandom(), fAmt=fandomUsed(f);
+  const r=loadRecur(), rAmt=r.deduct?recurMonthlyTotal(r):0;
+  const sv=loadSavings(), sAmt=savingsMonthlyTotal(sv);
+  const combined=general+fAmt+rAmt+sAmt;
+  el('monthlyTotalAmt').textContent=fmt(combined);
+  const right=el('monthlyTotalRight'); right.innerHTML='';
+  [{label:'일반 소비',amt:general,color:'#4a9eda'},{label:f.name||'덕질',amt:fAmt,color:'#b47fdb'},
+   {label:'정기지출',amt:rAmt,color:'#9b8ecf'},{label:'예적금',amt:sAmt,color:'#2d8f6f'}]
+  .filter(i=>i.amt>0).forEach(item=>{
+    const d=document.createElement('div'); d.className='monthly-sub-item';
+    d.innerHTML=`<div class="monthly-sub-dot" style="background:${item.color}"></div><span>${item.label} ${item.amt.toLocaleString('ko-KR')}원</span>`;
+    right.appendChild(d);
+  });
+  if(!combined) right.innerHTML='<div class="monthly-sub-item" style="color:rgba(255,255,255,.25)">아직 소비 없음</div>';
+}
+
+// ── 정기지출 ──
+function renderRecurCard(r) {
+  const m=recurMonthlyTotal(r);
+  el('recurTotal').textContent=m>0?m.toLocaleString('ko-KR')+'원 / 월':'항목 없음';
+  el('recurDeductToggle').checked=r.deduct;
+  el('recurDeductBadge').textContent=r.deduct?'예산 차감 중':'차감 안 함';
+  el('recurDeductBadge').className='deduct-badge '+(r.deduct?'on':'off');
+  const list=el('recurList'); list.innerHTML='';
+  if(!r.items.length){list.innerHTML='<div class="panel-empty">정기지출 항목이 없어요</div>';return;}
+  r.items.forEach(item=>{
+    const d=document.createElement('div'); d.className='panel-item';
+    d.innerHTML=`<div class="item-dot"></div><div class="item-name">${item.name}</div><div class="item-cycle">${cycleLabel(item)}</div><div class="item-amt">${toMonthly(item.amount,item.cycle).toLocaleString('ko-KR')}원/월</div>`;
+    list.appendChild(d);
+  });
+}
+function renderRecurEdit(items) {
+  const el_=el('recurEditList'); el_.innerHTML='';
+  items.forEach((item,i)=>{
+    const row=document.createElement('div'); row.className='edit-row';
+    row.innerHTML=`<input class="edit-name" type="text" value="${item.name}" placeholder="항목명">
+      <input class="edit-amt mono" type="number" value="${item.amount}" placeholder="금액">
+      <select class="edit-cycle">
+        <option value="weekly"  ${item.cycle==='weekly'?'selected':''}>매주</option>
+        <option value="monthly" ${!item.cycle||item.cycle==='monthly'?'selected':''}>매월</option>
+        <option value="yearly"  ${item.cycle==='yearly'?'selected':''}>매년</option>
+      </select>
+      <button class="edit-del">×</button>`;
+    row.querySelector('.edit-del').onclick=()=>{ items.splice(i,1); renderRecurEdit(items); };
+    el_.appendChild(row);
+  });
+}
+function initRecur() {
+  const r=loadRecur(); renderRecurCard(r);
+  el('recurDeductToggle').onchange=e=>{
+    r.deduct=e.target.checked; saveRecur(r); renderRecurCard(r);
+    const st=loadState(); renderBudgetHero(st); renderMonthlyTotal(st); renderIncome();
+    showToast(r.deduct?'정기지출이 예산에서 차감됩니다':'정기지출 차감을 해제했어요');
+  };
+  el('btnRecurEdit').onclick=()=>{ renderRecurEdit([...r.items]); openModal('recurModalOverlay'); };
+  initModalClose('recurModalOverlay','recurModalClose');
+  el('btnAddRecur').onclick=()=>{
+    const rows=el('recurEditList').querySelectorAll('.edit-row');
+    const cur=[]; rows.forEach(row=>cur.push({name:row.querySelector('.edit-name').value.trim(),amount:parseInt(row.querySelector('.edit-amt').value)||0,cycle:row.querySelector('.edit-cycle').value}));
+    cur.push({name:'',amount:0,cycle:'monthly'}); renderRecurEdit(cur);
+  };
+  el('btnSaveRecur').onclick=()=>{
+    const rows=el('recurEditList').querySelectorAll('.edit-row'); const updated=[];
+    rows.forEach(row=>{ const name=row.querySelector('.edit-name').value.trim(); if(name) updated.push({name,amount:parseInt(row.querySelector('.edit-amt').value)||0,cycle:row.querySelector('.edit-cycle').value}); });
+    r.items=updated; saveRecur(r); renderRecurCard(r);
+    const st=loadState(); renderBudgetHero(st); renderMonthlyTotal(st); renderIncome();
+    closeModal('recurModalOverlay'); showToast('정기지출 항목을 저장했어요');
+  };
+}
+
+// ── 예적금 ──
+function renderSavingsCard(sv) {
+  const bal=savingsTotalBalance(sv);
+  el('savingsTotal').textContent=bal>0?bal.toLocaleString('ko-KR')+'원 적립 중':'항목 없음';
+  const list=el('savingsList'); list.innerHTML='';
+  if(!sv.items.length){list.innerHTML='<div class="panel-empty">예적금 항목이 없어요</div>';return;}
+  sv.items.forEach((item,i)=>{
+    const d=document.createElement('div'); d.className='panel-item'; d.style.alignItems='flex-start';
+    d.innerHTML=`<div class="item-dot teal" style="margin-top:3px"></div>
+      <div style="flex:1">
+        <div class="item-name">${item.name}</div>
+        <div style="font-size:11px;color:var(--text-hint);margin-top:2px">${cycleLabel(item)} · 월 ${toMonthly(item.amount,item.cycle).toLocaleString('ko-KR')}원</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <div class="item-bal">${(item.balance||0).toLocaleString('ko-KR')}원 적립</div>
+        <button class="btn-savings-pay" data-idx="${i}">납입 기록</button>
+      </div>`;
+    d.querySelector('.btn-savings-pay').onclick=()=>recordSavingsPayment(i);
+    list.appendChild(d);
+  });
+}
+function recordSavingsPayment(idx) {
+  const sv=loadSavings(); const item=sv.items[idx]; if(!item) return;
+  const payAmt=toMonthly(item.amount,item.cycle);
+  if(!confirm(`${item.name} 납입 기록\n유동자산 -${fmt(payAmt)}\n${item.name} 잔액 +${fmt(payAmt)}\n\n계속할까요?`)) return;
+  item.balance=(item.balance||0)+payAmt; saveSavings(sv);
+  adjustLiquid(-payAmt);
+  renderSavingsCard(sv); renderMonthlyTotal(loadState()); renderIncome();
+  showToast(`${item.name} 납입 완료`);
+}
+function renderSavingsEdit(items) {
+  const el_=el('savingsEditList'); el_.innerHTML='';
+  items.forEach((item,i)=>{
+    const row=document.createElement('div'); row.className='edit-row';
+    row.innerHTML=`<input class="edit-name" type="text" value="${item.name}" placeholder="적금명">
+      <input class="edit-amt mono" type="number" value="${item.amount}" placeholder="납입액">
+      <select class="edit-cycle">
+        <option value="weekly"  ${item.cycle==='weekly'?'selected':''}>매주</option>
+        <option value="monthly" ${!item.cycle||item.cycle==='monthly'?'selected':''}>매월</option>
+        <option value="yearly"  ${item.cycle==='yearly'?'selected':''}>매년</option>
+      </select>
+      <button class="edit-del">×</button>`;
+    row.querySelector('.edit-del').onclick=()=>{ items.splice(i,1); renderSavingsEdit(items); };
+    el_.appendChild(row);
+  });
+}
+function initSavings() {
+  const sv=loadSavings(); renderSavingsCard(sv);
+  el('btnSavingsEdit').onclick=()=>{ renderSavingsEdit(sv.items.map(i=>({...i}))); openModal('savingsModalOverlay'); };
+  initModalClose('savingsModalOverlay','savingsModalClose');
+  el('btnAddSavings').onclick=()=>{
+    const rows=el('savingsEditList').querySelectorAll('.edit-row'); const cur=[];
+    rows.forEach(row=>cur.push({name:row.querySelector('.edit-name').value.trim(),amount:parseInt(row.querySelector('.edit-amt').value)||0,cycle:row.querySelector('.edit-cycle').value,balance:0}));
+    cur.push({name:'',amount:0,cycle:'monthly',balance:0}); renderSavingsEdit(cur);
+  };
+  el('btnSaveSavings').onclick=()=>{
+    const rows=el('savingsEditList').querySelectorAll('.edit-row'); const updated=[];
+    rows.forEach(row=>{ const name=row.querySelector('.edit-name').value.trim(); if(name){ const ex=sv.items.find(i=>i.name===name); updated.push({name,amount:parseInt(row.querySelector('.edit-amt').value)||0,cycle:row.querySelector('.edit-cycle').value,balance:ex?ex.balance:0}); } });
+    sv.items=updated; saveSavings(sv); renderSavingsCard(sv); renderMonthlyTotal(loadState()); renderIncome();
+    closeModal('savingsModalOverlay'); showToast('예적금 항목을 저장했어요');
+  };
+}
+
+// ── Budget Hero ──
+function renderBudgetHero(state) {
+  const lim=effectiveLimit(state), rem=remaining(state), ratio=lim>0?rem/lim:0;
+  const amtEl=el('budgetAmount'); amtEl.textContent=fmtS(rem); amtEl.className='budget-amount';
+  const statusEl=el('budgetStatus');
+  if(rem<0){amtEl.classList.add('warn2');statusEl.textContent='한도 초과 · 잠깐, 다시 생각해볼까요';}
+  else if(ratio<.25){amtEl.classList.add('warn2');statusEl.textContent='위험 · 선택지가 많지 않아요';}
+  else if(ratio<.5){amtEl.classList.add('warn1');statusEl.textContent='보통 · 신중하게 선택해요';}
+  else statusEl.textContent='여유 있어요 · 마음껏 선택하세요';
+  el('metaLimit').textContent=fmt(lim);
+  el('metaUsed').textContent=fmt(totalUsed(state));
+  el('metaCarry').textContent=(state.carryover>=0?'+':'')+fmtS(state.carryover);
+  const over=totalUsed(state)-effectiveLimit(state);
+  const dn=el('metaDeductNote'), cn=el('metaCarryNote');
+  if(over>0){
+    dn.style.display='flex'; dn.className='deduct-note';
+    dn.innerHTML=`<span class="note-icon">⚠</span><span>한도 ${fmt(over)} 초과 중 · 월 마감 시 다음 달 선택 가능 금액에서 ${fmt(over)} 차감됩니다</span>`;
+    cn.style.display='none';
+  } else if(state.carryover<0){
+    dn.style.display='flex'; dn.className='deduct-note';
+    dn.innerHTML=`<span class="note-icon">⚠</span><span>지난 달 초과분 ${fmt(-state.carryover)} 차감 적용 중 · 한도가 그만큼 줄어든 상태예요</span>`;
+    cn.style.display='none';
+  } else {
+    dn.style.display='none';
+    if(state.carryover>0){
+      cn.style.display='flex'; cn.className='carry-note';
+      cn.innerHTML=`<span class="note-icon">↓</span><span>지난 달 절약분 ${fmt(state.carryover)} 이월 적용 중 · 한도가 그만큼 늘어났어요</span>`;
+    } else cn.style.display='none';
+  }
+  const banner=el('carryoverBanner');
+  if(state.carryover!==0){ banner.classList.add('visible'); banner.textContent=state.carryover>0?`지난 달 절약분 +${fmt(state.carryover)} 이월됨`:`지난 달 초과분 ${fmtS(state.carryover)} 차감됨`; }
+  else banner.classList.remove('visible');
+}
+
+// ── 카테고리 ──
+const hexToRgb = hex => { const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16); return `${r},${g},${b}`; };
+function renderCatList(state) {
+  const used=usedByCategory(state);
+  const container=el('catList'); container.innerHTML='';
+  state.categories.forEach(c=>{
+    const u=used[c.id]||0, avail=c.budget-u, pct=c.budget>0?Math.min(100,(u/c.budget)*100):0;
+    const card=document.createElement('div'); card.className='cat-card';
+    card.innerHTML=`<div class="cat-header"><div class="cat-name"><span class="cat-dot" style="background:${c.color}"></span>${c.name}</div><div class="cat-available" style="color:${avail<0?'var(--warn2)':'var(--text-secondary)'}>${avail>=0?'선택 가능 '+fmt(avail):'초과 '+fmt(-avail)}</div></div><div class="cat-bar-bg"><div class="cat-bar-fill" style="width:${pct}%;background:${c.color}"></div></div><div class="cat-numbers"><span>${fmt(u)} 사용</span><span>한도 ${fmt(c.budget)}</span></div>`;
+    container.appendChild(card);
+  });
+}
 function renderCatBtns(state, selectedId) {
-  const group = document.getElementById('catBtnGroup');
-  group.innerHTML = '';
-  state.categories.forEach(c => {
-    const btn = document.createElement('button');
-    const isActive = c.id === selectedId;
-    btn.className = 'cat-btn' + (isActive ? ' cat-btn-active' : '');
-    btn.dataset.id = c.id;
-    btn.textContent = c.name;
-    if (isActive) {
-      btn.style.background = `rgba(${hexToRgb(c.color)},0.12)`;
-      btn.style.color = c.color;
-      btn.style.borderColor = c.color;
-    }
-    btn.onclick = () => {
-      // 모든 버튼 초기화
-      group.querySelectorAll('.cat-btn').forEach(b => {
-        b.className = 'cat-btn';
-        b.style.background = '';
-        b.style.color = '';
-        b.style.borderColor = '';
-      });
-      // 선택된 버튼 활성화
-      btn.className = 'cat-btn cat-btn-active';
-      btn.style.background = `rgba(${hexToRgb(c.color)},0.12)`;
-      btn.style.color = c.color;
-      btn.style.borderColor = c.color;
+  const group=el('catBtnGroup'); group.innerHTML='';
+  state.categories.forEach(c=>{
+    const btn=document.createElement('button');
+    const isActive=c.id===selectedId;
+    btn.className='cat-btn'+(isActive?' cat-btn-active':''); btn.dataset.id=c.id; btn.textContent=c.name;
+    if(isActive){btn.style.background=`rgba(${hexToRgb(c.color)},.12)`;btn.style.color=c.color;btn.style.borderColor=c.color;}
+    btn.onclick=()=>{
+      group.querySelectorAll('.cat-btn').forEach(b=>{b.className='cat-btn';b.style.background='';b.style.color='';b.style.borderColor='';});
+      btn.className='cat-btn cat-btn-active';
+      btn.style.background=`rgba(${hexToRgb(c.color)},.12)`;btn.style.color=c.color;btn.style.borderColor=c.color;
     };
     group.appendChild(btn);
   });
 }
 
+// ── 소비 내역 ──
 function renderLedger(state) {
-  const body = document.getElementById('ledgerBody');
-  const total = document.getElementById('ledgerTotal');
-  body.innerHTML = '';
-  const sorted = [...state.entries].reverse();
-  if (sorted.length === 0) {
-    body.innerHTML = '<div class="ledger-empty">아직 기록이 없어요</div>';
-  } else {
-    sorted.forEach((e) => {
-      const cat = state.categories.find(c => c.id === e.catId);
-      const color = cat ? cat.color : '#aaa';
-      const catName = cat ? cat.name : e.catId;
-      const row = document.createElement('div');
-      row.className = 'ledger-row';
-      row.innerHTML = `
-        <div class="ledger-dot" style="background:${color}"></div>
-        <div>
-          <div class="ledger-memo">${e.memo || '(메모 없음)'}</div>
-          <div class="ledger-cat">${catName} · ${e.date}</div>
-        </div>
-        <div class="ledger-amt" style="margin-left:auto">-${fmt(e.amount)}</div>
-        <button class="ledger-del" data-eid="${e.id}">×</button>
-      `;
-      body.appendChild(row);
+  const body=el('ledgerBody'); body.innerHTML='';
+  const sorted=[...state.entries].reverse();
+  if(!sorted.length){body.innerHTML='<div class="ledger-empty">아직 기록이 없어요</div>';}
+  else sorted.forEach(e=>{
+    const cat=state.categories.find(c=>c.id===e.catId);
+    const color=cat?cat.color:'#aaa', catName=cat?cat.name:e.catId;
+    const row=document.createElement('div'); row.className='ledger-row';
+    row.innerHTML=`<div class="ledger-dot" style="background:${color}"></div><div class="ledger-info"><div class="ledger-memo">${e.memo||'(메모 없음)'}</div><div class="ledger-cat">${catName} · ${e.date}</div></div><div class="ledger-amt">-${fmt(e.amount)}</div><button class="ledger-del" data-eid="${e.id}">×</button>`;
+    body.appendChild(row);
+  });
+  el('ledgerTotal').textContent='합계 '+fmt(totalUsed(state));
+  body.querySelectorAll('.ledger-del').forEach(btn=>{
+    btn.onclick=()=>{ state.entries=state.entries.filter(e=>e.id!==btn.dataset.eid); saveState(state); renderAll(state); };
+  });
+}
+
+// ── 덕질 ──
+function renderFandom(f) {
+  const used=fandomUsed(f), rem=f.budget-used, pct=f.budget>0?Math.min(100,(used/f.budget)*100):0;
+  el('fandomLabel').textContent=f.name||'덕질 예산';
+  const amtEl=el('fandomRemaining'); amtEl.className='fandom-amount'; amtEl.style.color='';
+  if(!f.budget){amtEl.textContent='예산 미설정';amtEl.style.color='var(--text-hint)';}
+  else{amtEl.textContent=(rem>=0?'':'-')+fmt(Math.abs(rem));if(rem<0)amtEl.classList.add('warn2');else if(pct>75)amtEl.classList.add('warn1');}
+  el('fandomMeta').textContent=f.budget?`한도 ${fmt(f.budget)}`:'';
+  const fill=el('fandomBarFill'); fill.style.width=pct+'%'; fill.className='fandom-bar-fill'+(rem<0?' warn2':pct>75?' warn1':'');
+  el('fandomNumbers').innerHTML=f.budget?`<span>${fmt(used)} 사용</span><span>남은 선택 ${fmt(Math.max(0,rem))}</span>`:'';
+  const body=el('fandomLedgerBody'); body.innerHTML='';
+  const sorted=[...f.entries].reverse();
+  if(!sorted.length){body.innerHTML='<div class="fandom-ledger-empty">아직 기록이 없어요</div>';}
+  else sorted.forEach(e=>{
+    const row=document.createElement('div'); row.className='fandom-ledger-row';
+    row.innerHTML=`<div class="fandom-ledger-memo">${e.memo||'(메모 없음)'}</div><div class="fandom-ledger-date">${e.date}</div><div class="fandom-ledger-amt">-${fmt(e.amount)}</div><button class="fandom-ledger-del" data-eid="${e.id}">×</button>`;
+    row.querySelector('.fandom-ledger-del').onclick=()=>{ f.entries=f.entries.filter(x=>x.id!==e.id); saveFandom(f); renderFandom(f); renderMonthlyTotal(loadState()); renderIncome(); };
+    body.appendChild(row);
+  });
+}
+function initFandom() {
+  const f=loadFandom(); renderFandom(f);
+  el('btnFandomSet').onclick=()=>{ el('fandomNameInput').value=f.name||''; el('fandomBudgetInput').value=f.budget||''; openModal('fandomModalOverlay'); };
+  initModalClose('fandomModalOverlay','fandomModalClose');
+  el('btnFandomConfirm').onclick=()=>{
+    f.name=el('fandomNameInput').value.trim()||'덕질 예산'; f.budget=parseInt(el('fandomBudgetInput').value)||0;
+    saveFandom(f); renderFandom(f); closeModal('fandomModalOverlay'); showToast(`${f.name} 예산이 설정됐어요`);
+  };
+  el('btnFandomAdd').onclick=()=>{
+    const amt=parseFloat(el('fandomInputAmt').value); if(!amt||amt<=0){showToast('금액을 입력해주세요');return;}
+    f.entries.push({id:Date.now().toString(),amount:Math.round(amt),memo:el('fandomInputMemo').value.trim(),date:todayStr()});
+    saveFandom(f); el('fandomInputAmt').value=''; el('fandomInputMemo').value='';
+    renderFandom(f); renderMonthlyTotal(loadState()); renderIncome();
+  };
+  el('fandomInputMemo').addEventListener('keydown',e=>{ if(e.key==='Enter') el('btnFandomAdd').click(); });
+}
+
+// ── 카테고리 편집 ──
+function initCatEdit(state) {
+  el('btnEditCat').onclick=()=>{ renderCatEditList(state.categories); openModal('catModalOverlay'); };
+  initModalClose('catModalOverlay','catModalClose');
+  el('btnAddCat').onclick=()=>{ state.categories.push({id:'cat_'+Date.now(),name:'새 카테고리',budget:50000,carryover:false,color:'#888888'}); renderCatEditList(state.categories); };
+  el('btnSaveCat').onclick=()=>{
+    const rows=el('catEditList').querySelectorAll('.cat-edit-row'); const updated=[];
+    rows.forEach(row=>updated.push({id:row.dataset.id,name:row.querySelector('.cat-edit-name').value.trim()||'카테고리',budget:parseInt(row.querySelector('.cat-edit-budget').value)||0,carryover:row.querySelector('.modal-check').checked,color:row.querySelector('.cat-color-input').value||'#888888'}));
+    state.categories=updated; saveState(state); closeModal('catModalOverlay'); renderAll(state);
+  };
+  function renderCatEditList(cats) {
+    const container=el('catEditList'); container.innerHTML='';
+    cats.forEach(c=>{
+      const row=document.createElement('div'); row.className='cat-edit-row'; row.dataset.id=c.id;
+      const cv=c.color||'#888888';
+      row.innerHTML=`<button class="cat-color-swatch" style="background:${cv}"><input type="color" class="cat-color-input" value="${cv}"></button><input class="cat-edit-name" type="text" value="${c.name}" placeholder="이름"><input class="cat-edit-budget" type="number" value="${c.budget}" placeholder="예산"><label style="font-size:11px;color:var(--text-hint);display:flex;align-items:center;gap:3px;white-space:nowrap"><input type="checkbox" class="modal-check" ${c.carryover?'checked':''}> 이월</label><button class="cat-del-btn">×</button>`;
+      const ci=row.querySelector('.cat-color-input'), sw=row.querySelector('.cat-color-swatch');
+      ci.oninput=()=>sw.style.background=ci.value;
+      row.querySelector('.cat-del-btn').onclick=()=>{ state.categories=state.categories.filter(x=>x.id!==c.id); renderCatEditList(state.categories); };
+      container.appendChild(row);
     });
   }
-  total.textContent = '합계 ' + fmt(totalUsed(state));
-
-  // delete handlers
-  body.querySelectorAll('.ledger-del').forEach(btn => {
-    btn.onclick = () => {
-      const eid = btn.dataset.eid;
-      state.entries = state.entries.filter(e => e.id !== eid);
-      saveState(state);
-      renderAll(state);
-    };
-  });
 }
 
-// #1 이번 달 총 소비액 (일반 + 덕질 + 정기지출 합산)
-function renderMonthlyTotal(state) {
-  const generalUsed = totalUsed(state);
-  const f = loadFandom();
-  const fandomUsedAmt = fandomUsed(f);
-  const r = loadRecur();
-  const recurAmt = r.deduct ? recurMonthlyTotal(r) : 0;
-  const combined = generalUsed + fandomUsedAmt + recurAmt;
-
-  document.getElementById('monthlyTotalAmt').textContent = fmt(combined);
-
-  const right = document.getElementById('monthlyTotalRight');
-  right.innerHTML = '';
-
-  const items = [];
-  if (generalUsed > 0)   items.push({ label: '일반 소비', amt: generalUsed,   color: '#4a9eda' });
-  if (fandomUsedAmt > 0) items.push({ label: f.name || '덕질', amt: fandomUsedAmt, color: '#b47fdb' });
-  if (recurAmt > 0)      items.push({ label: '정기지출',  amt: recurAmt,       color: '#9b8ecf' });
-
-  items.forEach(item => {
-    const div = document.createElement('div');
-    div.className = 'monthly-total-sub-item';
-    div.innerHTML = `
-      <div class="monthly-total-sub-dot" style="background:${item.color}"></div>
-      <span>${item.label} ${item.amt.toLocaleString('ko-KR')}원</span>
-    `;
-    right.appendChild(div);
-  });
-
-  if (combined === 0) {
-    right.innerHTML = '<div class="monthly-total-sub-item" style="color:rgba(255,255,255,0.25)">아직 소비 없음</div>';
-  }
-}
-
+// ── renderAll ──
 function renderAll(state) {
   renderBudgetHero(state);
   renderCatList(state);
-  const selected = document.querySelector('.cat-btn.cat-btn-active');
-  const selId = selected ? selected.dataset.id : null;
-  renderCatBtns(state, selId);
+  const sel=document.querySelector('.cat-btn.cat-btn-active');
+  renderCatBtns(state, sel?sel.dataset.id:null);
   renderLedger(state);
   renderMonthlyTotal(state);
+  renderIncome();
 }
 
-// ─── 추가 버튼 ───
+// ── 소비 추가 ──
 function initAdd(state) {
-  document.getElementById('btnAdd').onclick = () => {
-    const amtRaw = parseFloat(document.getElementById('inputAmt').value);
-    if (!amtRaw || amtRaw <= 0) { alert('금액을 입력해주세요'); return; }
-    const selected = document.querySelector('.cat-btn.cat-btn-active');
-    if (!selected) { alert('카테고리를 선택해주세요'); return; }
-    const memo = document.getElementById('inputMemo').value.trim();
-    const now = new Date();
-    const dateStr = `${now.getMonth()+1}/${now.getDate()}`;
-    const entry = {
-      id: Date.now().toString(),
-      catId: selected.dataset.id,
-      amount: Math.round(amtRaw),
-      memo: memo,
-      date: dateStr,
-    };
-    state.entries.push(entry);
-    saveState(state);
-    document.getElementById('inputAmt').value = '';
-    document.getElementById('inputMemo').value = '';
-    renderAll(state);
+  el('btnAdd').onclick=()=>{
+    const amt=parseFloat(el('inputAmt').value); if(!amt||amt<=0){alert('금액을 입력해주세요');return;}
+    const sel=document.querySelector('.cat-btn.cat-btn-active'); if(!sel){alert('카테고리를 선택해주세요');return;}
+    state.entries.push({id:Date.now().toString(),catId:sel.dataset.id,amount:Math.round(amt),memo:el('inputMemo').value.trim(),date:todayStr()});
+    saveState(state); el('inputAmt').value=''; el('inputMemo').value=''; renderAll(state);
   };
-
-  // Enter key on memo
-  document.getElementById('inputMemo').addEventListener('keydown', e => {
-    if (e.key === 'Enter') document.getElementById('btnAdd').click();
-  });
+  el('inputMemo').addEventListener('keydown',e=>{ if(e.key==='Enter') el('btnAdd').click(); });
 }
 
-// ─── 월 마감 ───
+// ── 월 마감 ──
 function initReset(state) {
-  document.getElementById('btnReset').onclick = () => {
-    const rem = remaining(state);
-    if (!confirm(`월 마감을 실행합니다.\n남은 금액: ${fmtSigned(rem)}\n${rem > 0 ? '이월 처리됩니다.' : '다음 달에 차감됩니다.'}\n계속하시겠어요?`)) return;
-
-    // 이월 가능 카테고리의 남은 금액 합산
-    const used = usedByCategory(state);
-    let carryAmt = 0;
-    state.categories.forEach(c => {
-      if (c.carryover) {
-        carryAmt += (c.budget - (used[c.id] || 0));
-      }
-    });
-    // 음수면 차감, 양수면 이월 (MAX_CARRYOVER 제한)
-    const newCarry = Math.max(-MAX_CARRYOVER, Math.min(MAX_CARRYOVER, carryAmt));
-
-    const now = new Date();
-    const newState = {
-      month: now.getFullYear() * 100 + (now.getMonth() + 1),
-      categories: JSON.parse(JSON.stringify(state.categories)),
-      carryover: newCarry,
-      entries: [],
-    };
-    // Update state in place
-    Object.assign(state, newState);
-    saveState(state);
-    renderAll(state);
+  el('btnReset').onclick=()=>{
+    const rem=remaining(state);
+    if(!confirm(`월 마감을 실행합니다.\n남은 금액: ${fmtS(rem)}\n${rem>0?'이월 처리됩니다.':'다음 달에 차감됩니다.'}\n계속하시겠어요?`)) return;
+    const used=usedByCategory(state); let carryAmt=0;
+    state.categories.forEach(c=>{ if(c.carryover) carryAmt+=(c.budget-(used[c.id]||0)); });
+    const newCarry=Math.max(-MAX_CARRY,Math.min(MAX_CARRY,carryAmt));
+    const n=new Date();
+    Object.assign(state,{month:n.getFullYear()*100+(n.getMonth()+1),categories:JSON.parse(JSON.stringify(state.categories)),carryover:newCarry,entries:[]});
+    saveState(state); renderAll(state); showToast('월 마감 완료');
   };
 }
 
-// ─── 카테고리 편집 모달 ───
-function initCatEdit(state) {
-  const overlay = document.getElementById('modalOverlay');
-  const closeBtn = document.getElementById('modalClose');
-  const editList = document.getElementById('catEditList');
-  const addCatBtn = document.getElementById('btnAddCat');
-  const saveBtn = document.getElementById('btnSaveCat');
-
-  document.getElementById('btnEditCat').onclick = () => {
-    renderCatEditList(state.categories);
-    overlay.classList.add('open');
-  };
-  closeBtn.onclick = () => overlay.classList.remove('open');
-  overlay.onclick = (e) => { if (e.target === overlay) overlay.classList.remove('open'); };
-
-  addCatBtn.onclick = () => {
-    const newCat = {
-      id: 'cat_' + Date.now(),
-      name: '새 카테고리',
-      budget: 50000,
-      carryover: false,
-      color: '#888888',
-    };
-    state.categories.push(newCat);
-    renderCatEditList(state.categories);
-  };
-
-  saveBtn.onclick = () => {
-    const rows = editList.querySelectorAll('.cat-edit-row');
-    const updated = [];
-    rows.forEach(row => {
-      const id = row.dataset.id;
-      const name = row.querySelector('.cat-edit-name').value.trim() || '카테고리';
-      const budget = parseInt(row.querySelector('.cat-edit-budget').value) || 0;
-      const carryover = row.querySelector('.modal-check').checked;
-      const color = row.querySelector('.cat-color-input').value || '#888888';
-      updated.push({ id, name, budget, carryover, color });
-    });
-    state.categories = updated;
-    saveState(state);
-    overlay.classList.remove('open');
-    renderAll(state);
-  };
-
-  function renderCatEditList(cats) {
-    editList.innerHTML = '';
-    cats.forEach(c => {
-      const row = document.createElement('div');
-      row.className = 'cat-edit-row';
-      row.dataset.id = c.id;
-      const colorVal = c.color || '#888888';
-      row.innerHTML = `
-        <button class="cat-color-swatch" title="색상 선택" style="background:${colorVal}">
-          <input type="color" class="cat-color-input" value="${colorVal}">
-        </button>
-        <input class="cat-edit-name" type="text" value="${c.name}" placeholder="이름">
-        <input class="cat-edit-budget" type="number" value="${c.budget}" placeholder="예산">
-        <label style="font-size:11px;color:var(--text-hint);display:flex;align-items:center;gap:3px;white-space:nowrap">
-          <input type="checkbox" class="modal-check" ${c.carryover ? 'checked' : ''}> 이월
-        </label>
-        <button class="cat-del-btn">×</button>
-      `;
-      // 색상 선택 시 스와치 배경 실시간 반영
-      const colorInput = row.querySelector('.cat-color-input');
-      const swatch = row.querySelector('.cat-color-swatch');
-      colorInput.oninput = () => { swatch.style.background = colorInput.value; };
-      row.querySelector('.cat-del-btn').onclick = () => {
-        state.categories = state.categories.filter(x => x.id !== c.id);
-        renderCatEditList(state.categories);
-      };
-      editList.appendChild(row);
-    });
-  }
-}
-
-// ─── 총자산 시스템 ───
-const KEY_ASSETS = 'bcs_assets_v1';
-const ASSET_PALETTE = ['#2563a8','#2d8f6f','#a85c2d','#7c3a9e','#b34a4a','#4a7a4a','#8a6a2a','#3a6a8a'];
-
-function loadAssets() {
-  try {
-    const raw = localStorage.getItem(KEY_ASSETS);
-    if (!raw) return [];
-    return JSON.parse(raw);
-  } catch(e) { return []; }
-}
-
-function saveAssets(items) {
-  localStorage.setItem(KEY_ASSETS, JSON.stringify(items));
-}
-
-function totalAssets(items) {
-  return items.reduce((s, i) => s + (i.amount || 0), 0);
-}
-
-// 원형 그래프 그리기 (canvas)
-function drawDonut(canvasId, items, opts = {}) {
-  const canvas = document.getElementById(canvasId);
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
-  ctx.clearRect(0, 0, W, H);
-
-  const total = totalAssets(items);
-  const cx = W / 2, cy = H / 2;
-  const r = opts.r || (W / 2 - (opts.gap || 4));
-  const innerR = opts.innerR || r * 0.58;
-
-  if (total === 0 || items.length === 0) {
-    ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.strokeStyle = '#e8e6e0';
-    ctx.lineWidth = r - innerR;
-    ctx.stroke();
-    return;
-  }
-
-  let startAngle = -Math.PI / 2;
-  items.forEach((item, i) => {
-    const slice = (item.amount / total) * Math.PI * 2;
-    const color = ASSET_PALETTE[i % ASSET_PALETTE.length];
-    const midR = (r + innerR) / 2;
-    const gap = opts.gapAngle || 0.025;
-
-    ctx.beginPath();
-    ctx.arc(cx, cy, midR, startAngle + gap, startAngle + slice - gap);
-    ctx.strokeStyle = color;
-    ctx.lineWidth = r - innerR;
-    ctx.lineCap = 'round';
-    ctx.stroke();
-
-    startAngle += slice;
-  });
-}
-
-function renderAssetCard(items) {
-  const total = totalAssets(items);
-  document.getElementById('assetTotalDisplay').textContent =
-    total > 0 ? total.toLocaleString('ko-KR') + '원' : '—';
-  const count = items.length;
-  document.getElementById('assetSubDisplay').textContent =
-    count > 0 ? `${count}개 항목 · 탭하여 상세 보기` : '탭하여 자산 입력';
-  drawDonut('assetMiniDonut', items, { r: 22, innerR: 13, gap: 2, gapAngle: 0.04 });
-}
-
-function renderAssetModal(items) {
-  const total = totalAssets(items);
-  document.getElementById('assetModalTotal').textContent =
-    total > 0 ? total.toLocaleString('ko-KR') + '원' : '0원';
-  drawDonut('assetDonut', items, { r: 88, innerR: 52, gap: 4, gapAngle: 0.03 });
-
-  // Legend
-  const legend = document.getElementById('assetLegend');
-  legend.innerHTML = '';
-  if (items.length === 0) {
-    legend.innerHTML = '<div class="asset-empty" style="grid-column:1/-1">아직 자산 항목이 없어요</div>';
-  } else {
-    items.forEach((item, i) => {
-      const color = ASSET_PALETTE[i % ASSET_PALETTE.length];
-      const pct = total > 0 ? ((item.amount / total) * 100).toFixed(1) : '0.0';
-      const div = document.createElement('div');
-      div.className = 'legend-item';
-      div.innerHTML = `
-        <div class="legend-dot" style="background:${color}"></div>
-        <div class="legend-info">
-          <div class="legend-name">${item.name}</div>
-          <div class="legend-amt">${(item.amount || 0).toLocaleString('ko-KR')}원</div>
-          <div class="legend-pct">${pct}%</div>
-        </div>
-      `;
-      legend.appendChild(div);
-    });
-  }
-}
-
-function renderAssetEditList(items) {
-  const list = document.getElementById('assetItemList');
-  list.innerHTML = '';
-  items.forEach((item, i) => {
-    const color = ASSET_PALETTE[i % ASSET_PALETTE.length];
-    const row = document.createElement('div');
-    row.className = 'asset-item-row';
-    row.dataset.idx = i;
-    row.innerHTML = `
-      <div style="width:10px;height:10px;border-radius:50%;background:${color};flex-shrink:0"></div>
-      <input class="asset-item-name" type="text" value="${item.name}" placeholder="항목명 (예: 유동자산)">
-      <input class="asset-item-amt" type="number" value="${item.amount}" placeholder="금액">
-      <button class="asset-item-del">×</button>
-    `;
-    row.querySelector('.asset-item-del').onclick = () => {
-      items.splice(i, 1);
-      renderAssetEditList(items);
-      renderAssetModal(items);
-    };
-    // Live update on change
-    const nameInput = row.querySelector('.asset-item-name');
-    const amtInput = row.querySelector('.asset-item-amt');
-    nameInput.oninput = () => { item.name = nameInput.value; renderAssetModal(items); };
-    amtInput.oninput = () => { item.amount = parseInt(amtInput.value) || 0; renderAssetModal(items); };
-    list.appendChild(row);
-  });
-}
-
-function initAsset() {
-  let items = loadAssets();
-
-  function refresh() {
-    renderAssetCard(items);
-    renderAssetModal(items);
-    renderAssetEditList(items);
-  }
-
-  // Open modal
-  document.getElementById('assetCard').onclick = () => {
-    items = loadAssets();
-    refresh();
-    document.getElementById('assetModalOverlay').classList.add('open');
-  };
-
-  // Close modal
-  document.getElementById('assetModalClose').onclick = () => {
-    document.getElementById('assetModalOverlay').classList.remove('open');
-  };
-  document.getElementById('assetModalOverlay').onclick = (e) => {
-    if (e.target === document.getElementById('assetModalOverlay'))
-      document.getElementById('assetModalOverlay').classList.remove('open');
-  };
-
-  // Add item
-  document.getElementById('btnAddAssetItem').onclick = () => {
-    items.push({ name: '새 항목', amount: 0 });
-    renderAssetEditList(items);
-    renderAssetModal(items);
-  };
-
-  // Save
-  document.getElementById('btnSaveAsset').onclick = () => {
-    // Read from DOM inputs
-    const rows = document.getElementById('assetItemList').querySelectorAll('.asset-item-row');
-    const updated = [];
-    rows.forEach(row => {
-      const name = row.querySelector('.asset-item-name').value.trim() || '항목';
-      const amount = parseInt(row.querySelector('.asset-item-amt').value) || 0;
-      updated.push({ name, amount });
-    });
-    items = updated;
-    saveAssets(items);
-    renderAssetCard(items);
-    renderAssetModal(items);
-    document.getElementById('assetModalOverlay').classList.remove('open');
-  };
-
-  // Initial render
-  refresh();
-}
-
-// ─── 덕질 예산 시스템 ───
-const KEY_FANDOM = 'bcs_fandom_v1';
-
-function defaultFandom() {
-  const now = new Date();
-  return {
-    month: now.getFullYear() * 100 + (now.getMonth() + 1),
-    name: '덕질 예산',
-    budget: 0,       // 0 = 미설정
-    entries: [],
-  };
-}
-
-function loadFandom() {
-  try {
-    const raw = localStorage.getItem(KEY_FANDOM);
-    if (!raw) return defaultFandom();
-    return JSON.parse(raw);
-  } catch(e) { return defaultFandom(); }
-}
-
-function saveFandom(f) {
-  localStorage.setItem(KEY_FANDOM, JSON.stringify(f));
-}
-
-function fandomUsed(f) {
-  return f.entries.reduce((s, e) => s + e.amount, 0);
-}
-
-function renderFandom(f) {
-  const used = fandomUsed(f);
-  const rem = f.budget - used;
-  const pct = f.budget > 0 ? Math.min(100, (used / f.budget) * 100) : 0;
-  const isSet = f.budget > 0;
-
-  // Label
-  document.getElementById('fandomLabel').textContent = f.name || '덕질 예산';
-
-  // Amount
-  const amtEl = document.getElementById('fandomRemaining');
-  amtEl.className = 'fandom-amount';
-  if (!isSet) {
-    amtEl.textContent = '예산 미설정';
-    amtEl.style.color = 'var(--text-hint)';
-  } else {
-    amtEl.style.color = '';
-    amtEl.textContent = (rem >= 0 ? '' : '-') + Math.abs(rem).toLocaleString('ko-KR') + '원';
-    if (rem < 0) amtEl.classList.add('warn2');
-    else if (pct > 75) amtEl.classList.add('warn1');
-  }
-
-  // Meta
-  document.getElementById('fandomMeta').textContent =
-    isSet ? `한도 ${f.budget.toLocaleString('ko-KR')}원` : '';
-
-  // Bar
-  const fill = document.getElementById('fandomBarFill');
-  fill.style.width = pct + '%';
-  fill.className = 'fandom-bar-fill' + (rem < 0 ? ' warn2' : pct > 75 ? ' warn1' : '');
-
-  // Numbers
-  document.getElementById('fandomNumbers').innerHTML = isSet
-    ? `<span>${used.toLocaleString('ko-KR')}원 사용</span><span>남은 선택 ${Math.max(0,rem).toLocaleString('ko-KR')}원</span>`
-    : '';
-
-  // Ledger
-  const body = document.getElementById('fandomLedgerBody');
-  body.innerHTML = '';
-  const sorted = [...f.entries].reverse();
-  if (sorted.length === 0) {
-    body.innerHTML = '<div class="fandom-ledger-empty">아직 기록이 없어요</div>';
-  } else {
-    sorted.forEach(e => {
-      const row = document.createElement('div');
-      row.className = 'fandom-ledger-row';
-      row.innerHTML = `
-        <div class="fandom-ledger-memo">${e.memo || '(메모 없음)'}</div>
-        <div class="fandom-ledger-date">${e.date}</div>
-        <div class="fandom-ledger-amt">-${e.amount.toLocaleString('ko-KR')}원</div>
-        <button class="fandom-ledger-del" data-eid="${e.id}">×</button>
-      `;
-      row.querySelector('.fandom-ledger-del').onclick = () => {
-        f.entries = f.entries.filter(x => x.id !== e.id);
-        saveFandom(f);
-        renderFandom(f);
-        renderMonthlyTotal(loadState());
-      };
-      body.appendChild(row);
-    });
-  }
-}
-
-function initFandom() {
-  const f = loadFandom();
-
-  renderFandom(f);
-
-  // 예산 설정 모달 열기
-  document.getElementById('btnFandomSet').onclick = () => {
-    document.getElementById('fandomNameInput').value = f.name || '';
-    document.getElementById('fandomBudgetInput').value = f.budget || '';
-    document.getElementById('fandomModalOverlay').classList.add('open');
-  };
-
-  // 모달 닫기
-  document.getElementById('fandomModalClose').onclick = () =>
-    document.getElementById('fandomModalOverlay').classList.remove('open');
-  document.getElementById('fandomModalOverlay').onclick = (e) => {
-    if (e.target === document.getElementById('fandomModalOverlay'))
-      document.getElementById('fandomModalOverlay').classList.remove('open');
-  };
-
-  // 예산 저장
-  document.getElementById('btnFandomConfirm').onclick = () => {
-    const name = document.getElementById('fandomNameInput').value.trim() || '덕질 예산';
-    const budget = parseInt(document.getElementById('fandomBudgetInput').value) || 0;
-    f.name = name;
-    f.budget = budget;
-    saveFandom(f);
-    renderFandom(f);
-    document.getElementById('fandomModalOverlay').classList.remove('open');
-    showToast(`${name} 예산이 설정됐어요`);
-  };
-
-  // 기록 추가
-  document.getElementById('btnFandomAdd').onclick = () => {
-    const amtRaw = parseFloat(document.getElementById('fandomInputAmt').value);
-    if (!amtRaw || amtRaw <= 0) { showToast('금액을 입력해주세요'); return; }
-    const memo = document.getElementById('fandomInputMemo').value.trim();
-    const now = new Date();
-    f.entries.push({
-      id: Date.now().toString(),
-      amount: Math.round(amtRaw),
-      memo,
-      date: `${now.getMonth()+1}/${now.getDate()}`,
-    });
-    saveFandom(f);
-    document.getElementById('fandomInputAmt').value = '';
-    document.getElementById('fandomInputMemo').value = '';
-    renderFandom(f);
-    // 총 소비액 카드도 갱신
-    renderMonthlyTotal(loadState());
-  };
-
-  // 메모 필드 엔터키
-  document.getElementById('fandomInputMemo').addEventListener('keydown', e => {
-    if (e.key === 'Enter') document.getElementById('btnFandomAdd').click();
-  });
-}
-
-// ─── 정기지출 시스템 ───
-const KEY_RECUR = 'bcs_recur_v1';
-
-function loadRecur() {
-  try {
-    const raw = localStorage.getItem(KEY_RECUR);
-    if (!raw) return { deduct: false, items: [] };
-    return JSON.parse(raw);
-  } catch(e) { return { deduct: false, items: [] }; }
-}
-
-function saveRecur(r) {
-  localStorage.setItem(KEY_RECUR, JSON.stringify(r));
-}
-
-function recurMonthlyTotal(r) {
-  // 월 환산 합계 (매월=그대로, 매년=÷12)
-  return r.items.reduce((s, item) => {
-    return s + (item.cycle === 'yearly' ? Math.round(item.amount / 12) : item.amount);
-  }, 0);
-}
-
-function renderRecurCard(r) {
-  const monthly = recurMonthlyTotal(r);
-  document.getElementById('recurTotal').textContent =
-    monthly > 0 ? monthly.toLocaleString('ko-KR') + '원 / 월' : '항목 없음';
-
-  // 토글 + 배지 상태
-  const toggle = document.getElementById('recurDeductToggle');
-  toggle.checked = r.deduct;
-  const badge = document.getElementById('recurDeductBadge');
-  if (r.deduct) {
-    badge.textContent = '예산 차감 중';
-    badge.className = 'recur-deduct-badge on';
-  } else {
-    badge.textContent = '차감 안 함';
-    badge.className = 'recur-deduct-badge off';
-  }
-
-  // 항목 목록
-  const list = document.getElementById('recurList');
-  list.innerHTML = '';
-  if (r.items.length === 0) {
-    list.innerHTML = '<div class="recur-empty">정기지출 항목이 없어요</div>';
-    return;
-  }
-  r.items.forEach(item => {
-    const monthlyAmt = item.cycle === 'yearly' ? Math.round(item.amount / 12) : item.amount;
-    const cycleLabel = item.cycle === 'yearly' ? `연 ${item.amount.toLocaleString('ko-KR')}원` : '매월';
-    const div = document.createElement('div');
-    div.className = 'recur-item';
-    div.innerHTML = `
-      <div class="recur-item-dot"></div>
-      <div class="recur-item-name">${item.name}</div>
-      <div class="recur-item-cycle">${cycleLabel}</div>
-      <div class="recur-item-amt">${monthlyAmt.toLocaleString('ko-KR')}원</div>
-    `;
-    list.appendChild(div);
-  });
-}
-
-function renderRecurEditList(items) {
-  const el = document.getElementById('recurEditList');
-  el.innerHTML = '';
-  items.forEach((item, i) => {
-    const row = document.createElement('div');
-    row.className = 'recur-edit-row';
-    row.dataset.idx = i;
-    row.innerHTML = `
-      <input class="recur-edit-name" type="text" value="${item.name}" placeholder="항목명 (예: 교통비)">
-      <input class="recur-edit-amt" type="number" value="${item.amount}" placeholder="금액">
-      <select class="recur-edit-cycle">
-        <option value="monthly" ${item.cycle !== 'yearly' ? 'selected' : ''}>매월</option>
-        <option value="yearly"  ${item.cycle === 'yearly'  ? 'selected' : ''}>매년</option>
-      </select>
-      <button class="recur-edit-del">×</button>
-    `;
-    row.querySelector('.recur-edit-del').onclick = () => {
-      items.splice(i, 1);
-      renderRecurEditList(items);
-    };
-    el.appendChild(row);
-  });
-}
-
-function initRecur(getState) {
-  const r = loadRecur();
-
-  renderRecurCard(r);
-
-  // 토글 변경 → 즉시 저장 + 예산 재계산
-  document.getElementById('recurDeductToggle').onchange = (e) => {
-    r.deduct = e.target.checked;
-    saveRecur(r);
-    renderRecurCard(r);
-    const st = getState();
-    renderBudgetHero(st);
-    renderMonthlyTotal(st);
-    showToast(r.deduct ? '정기지출이 예산에서 차감됩니다' : '정기지출 차감을 해제했어요');
-  };
-
-  // 모달 열기/닫기
-  document.getElementById('btnRecurEdit').onclick = () => {
-    renderRecurEditList([...r.items]);
-    document.getElementById('recurModalOverlay').classList.add('open');
-  };
-  document.getElementById('recurModalClose').onclick = () =>
-    document.getElementById('recurModalOverlay').classList.remove('open');
-  document.getElementById('recurModalOverlay').onclick = (e) => {
-    if (e.target === document.getElementById('recurModalOverlay'))
-      document.getElementById('recurModalOverlay').classList.remove('open');
-  };
-
-  // 항목 추가
-  document.getElementById('btnAddRecur').onclick = () => {
-    const rows = document.getElementById('recurEditList').querySelectorAll('.recur-edit-row');
-    const current = [];
-    rows.forEach(row => {
-      current.push({
-        name: row.querySelector('.recur-edit-name').value.trim() || '항목',
-        amount: parseInt(row.querySelector('.recur-edit-amt').value) || 0,
-        cycle: row.querySelector('.recur-edit-cycle').value,
-      });
-    });
-    current.push({ name: '', amount: 0, cycle: 'monthly' });
-    renderRecurEditList(current);
-  };
-
-  // 저장
-  document.getElementById('btnSaveRecur').onclick = () => {
-    const rows = document.getElementById('recurEditList').querySelectorAll('.recur-edit-row');
-    const updated = [];
-    rows.forEach(row => {
-      const name = row.querySelector('.recur-edit-name').value.trim();
-      const amount = parseInt(row.querySelector('.recur-edit-amt').value) || 0;
-      const cycle = row.querySelector('.recur-edit-cycle').value;
-      if (name) updated.push({ name, amount, cycle });
-    });
-    r.items = updated;
-    saveRecur(r);
-    renderRecurCard(r);
-    const st = getState();
-    renderBudgetHero(st);
-    renderMonthlyTotal(st);
-    document.getElementById('recurModalOverlay').classList.remove('open');
-    showToast('정기지출 항목을 저장했어요');
-  };
-}
-
-// ─── JSON 내보내기 / 불러오기 ───
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
-}
-
+// ── 백업 ──
 function initBackup() {
-  // 내보내기
-  document.getElementById('btnExport').onclick = () => {
-    const now = new Date();
-    const stamp = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
-    const payload = {
-      exportedAt: now.toISOString(),
-      version: 2,
-      state: loadState(),
-      assets: loadAssets(),
-      fandom: loadFandom(),
-      recur: loadRecur(),
-    };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `budget-backup-${stamp}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    showToast('백업 파일을 저장했어요');
+  el('btnExport').onclick=()=>{
+    const n=new Date(); const stamp=`${n.getFullYear()}${String(n.getMonth()+1).padStart(2,'0')}${String(n.getDate()).padStart(2,'0')}`;
+    const payload={exportedAt:n.toISOString(),version:3,state:loadState(),assets:loadAssets(),fandom:loadFandom(),recur:loadRecur(),savings:loadSavings(),income:loadIncome()};
+    const url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}));
+    const a=document.createElement('a'); a.href=url; a.download=`budget-backup-${stamp}.json`; a.click();
+    URL.revokeObjectURL(url); showToast('백업 파일을 저장했어요');
   };
-
-  // 불러오기 — 버튼 클릭 → 파일 선택창
-  document.getElementById('btnImport').onclick = () => {
-    document.getElementById('importFile').click();
-  };
-
-  document.getElementById('importFile').onchange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      try {
-        const data = JSON.parse(ev.target.result);
-        // 버전 체크 및 필드 검증
-        if (!data.state || !data.assets) throw new Error('형식 오류');
-        if (!confirm('현재 데이터를 백업 파일로 덮어씁니다.\n계속하시겠어요?')) return;
-        saveState(data.state);
-        saveAssets(data.assets);
-        if (data.fandom) saveFandom(data.fandom);
-        if (data.recur)  saveRecur(data.recur);
-        // 앱 전체 재초기화
+  el('btnImport').onclick=()=>el('importFile').click();
+  el('importFile').onchange=e=>{
+    const file=e.target.files[0]; if(!file) return;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      try{
+        const data=JSON.parse(ev.target.result);
+        if(!data.state||!data.assets) throw new Error('형식 오류');
+        if(!confirm('현재 데이터를 백업 파일로 덮어씁니다.\n계속하시겠어요?')) return;
+        saveState(data.state); saveAssets(data.assets);
+        if(data.fandom)  saveFandom(data.fandom);
+        if(data.recur)   saveRecur(data.recur);
+        if(data.savings) saveSavings(data.savings);
+        if(data.income)  saveIncome(data.income);
         location.reload();
-      } catch(err) {
-        showToast('파일을 읽을 수 없어요. JSON 형식을 확인해주세요');
-      }
+      }catch(err){showToast('파일을 읽을 수 없어요');}
     };
-    reader.readAsText(file);
-    // 같은 파일 재선택 가능하도록 초기화
-    e.target.value = '';
+    reader.readAsText(file); e.target.value='';
   };
 }
 
-// ─── 초기화 ───
+// ── Init ──
 function init() {
-  const state = loadState();
+  const state=loadState();
   renderDate();
   renderAll(state);
   initAdd(state);
   initReset(state);
   initCatEdit(state);
   initAsset();
+  initIncome();
+  initRecur();
+  initSavings();
   initFandom();
-  initRecur(() => loadState());
   initBackup();
 }
-
 init();
 </script>
 </body>
