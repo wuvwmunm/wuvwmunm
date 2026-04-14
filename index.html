@@ -680,10 +680,11 @@ function openCollapsible(id){
   const collapse=loadCollapse(); collapse[id]=true; saveCollapse(collapse);
 }
 function initCollapsibles(){
-  const collapse=loadCollapse();
-  // 기본: inputSection, ledgerSection, catSection 열림
+  // bcs_collapse_v1 초기화 (이전 잘못된 상태 제거)
+  const saved=loadCollapse();
+  // 기본 열림 섹션 — 저장값 없으면 기본 적용
   const defaults={inputSection:true,ledgerSection:true,catSection:true};
-  const state={...defaults,...collapse};
+  const state=Object.keys(saved).length>0?{...defaults,...saved}:defaults;
   Object.keys(state).forEach(id=>{
     if(!state[id]) return;
     const body=el(id+'Body'), arrow=el(id+'Arrow');
@@ -1119,23 +1120,6 @@ function initCatEdit(state){
   }
 }
 
-// ══════════════════════════════════════
-// 소비 내역
-// ══════════════════════════════════════
-function renderLedger(state){
-  const list=el('ledgerList'); list.innerHTML='';
-  const sorted=[...state.entries].reverse();
-  if(!sorted.length){list.innerHTML='<div class="ledger-empty">아직 기록이 없어요</div>';}
-  else sorted.forEach(e=>{
-    const cat=state.categories.find(c=>c.id===e.catId);
-    const row=document.createElement('div'); row.className='ledger-row';
-    row.innerHTML=`<div class="l-dot" style="background:${cat?cat.color:'#aaa'}"></div><div class="l-info"><div class="l-memo">${e.memo||'(메모 없음)'}</div><div class="l-cat">${cat?cat.name:e.catId} · ${e.date}</div></div><div class="l-amt">-${fmt(e.amount)}</div><button class="l-del" data-eid="${e.id}">×</button>`;
-    row.querySelector('.l-del').onclick=()=>{state.entries=state.entries.filter(x=>x.id!==e.id);saveState(state);renderAll(state);};
-    list.appendChild(row);
-  });
-  el('ledgerBadge').textContent=`${state.entries.length}건`;
-  el('ledgerTotal').textContent='합계 '+fmt(totalUsed(state));
-}
 
 // ══════════════════════════════════════
 // 덕질
@@ -1274,6 +1258,8 @@ function renderLedger(state){
 // Init
 // ══════════════════════════════════════
 function init(){
+  // collapse 저장 상태 초기화 (버그로 잘못 저장된 경우 대비)
+  localStorage.removeItem(KEYS.collapse);
   const state=loadState();
   renderDate();
   initCollapsibles();
