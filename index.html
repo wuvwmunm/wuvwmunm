@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>자산 관리 웹</title>
+<title>소비 선택 시스템</title>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ── 화살표 제거 ── */
@@ -1131,7 +1131,7 @@ function renderLedger(state){
     const row=document.createElement('div'); row.className='ledger-row';
     row.innerHTML=`<div class="l-dot" style="background:${cat?cat.color:'#aaa'}"></div><div class="l-info"><div class="l-memo">${e.memo||'(메모 없음)'}</div><div class="l-cat">${cat?cat.name:e.catId} · ${e.date}</div></div><div class="l-amt">-${fmt(e.amount)}</div><button class="l-del" data-eid="${e.id}">×</button>`;
     row.querySelector('.l-del').onclick=()=>{state.entries=state.entries.filter(x=>x.id!==e.id);saveState(state);renderAll(state);};
-    list.appendChild(e=>row)(e);
+    list.appendChild(row);
   });
   el('ledgerBadge').textContent=`${state.entries.length}건`;
   el('ledgerTotal').textContent='합계 '+fmt(totalUsed(state));
