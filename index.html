@@ -1348,11 +1348,21 @@
 
   <!-- Backup bar -->
   <div class="backup-bar">
+    <button class="btn-backup" id="btnHistory">📋 지난 기록</button>
     <button class="btn-backup import" id="btnImport">↑ 불러오기</button>
     <button class="btn-backup" id="btnExport">↓ 내보내기</button>
   </div>
   <input type="file" id="importFile" accept=".json" style="display:none">
   <div class="toast" id="toast"></div>
+
+  <!-- 히스토리 모달 -->
+  <div class="modal-overlay" id="historyOverlay" style="z-index:200">
+    <div class="modal" style="max-height:85vh;overflow-y:auto;padding:24px 20px 32px">
+      <button class="modal-close" id="historyClose" style="float:right;background:none;border:none;font-size:20px;cursor:pointer;color:#aaa">×</button>
+      <div class="modal-title" style="margin-bottom:16px">지난 기록</div>
+      <div id="historyList"></div>
+    </div>
+  </div>
 
   <!-- 총자산 -->
   <div class="asset-card" id="assetCard">
@@ -1948,23 +1958,217 @@ function initAdd(state) {
   });
 }
 
+// ─── 월별 히스토리 ───
+const KEY_HISTORY = 'bcs_history_v1';
+
+function loadHistory() {
+  try {
+    const raw = localStorage.getItem(KEY_HISTORY);
+    return raw ? JSON.parse(raw) : [];
+  } catch(e) { return []; }
+}
+
+function saveHistory(history) {
+  localStorage.setItem(KEY_HISTORY, JSON.stringify(history));
+}
+
+// 이번 달 스냅샷 생성
+function buildSnapshot(state) {
+  const f  = loadFandom();
+  const r  = loadRecur();
+  const sv = loadSavings();
+  const inc = loadIncome();
+  const used = usedByCategory(state);
+  const fAmt = f.entries.reduce((s,e)=>s+e.amount,0);
+  const rAmt = r.deduct ? recurMonthlyTotal(r) : 0;
+  const incTotal = inc.entries.reduce((s,e)=>s+e.amount,0);
+  const generalTotal = totalUsed(state);
+
+  return {
+    month: state.month, // e.g. 202504
+    income: incTotal,
+    incomeEntries: JSON.parse(JSON.stringify(inc.entries)),
+    generalTotal,
+    fandomTotal: fAmt,
+    fandomName: f.name || '덕질 예산',
+    recurTotal: rAmt,
+    totalSpend: generalTotal + fAmt + rAmt,
+    carryover: state.carryover,
+    newCarryover: 0, // 마감 후 채울 값
+    categories: state.categories.map(c => ({
+      name: c.name,
+      color: c.color,
+      budget: c.budget,
+      used: used[c.id] || 0,
+    })),
+    entries: JSON.parse(JSON.stringify(state.entries)),
+    savedAt: new Date().toISOString(),
+  };
+}
+
+// 결산 카드 HTML 생성
+function buildSummaryHTML(snap) {
+  const y = Math.floor(snap.month / 100);
+  const m = snap.month % 100;
+  const saved = snap.incTotal - snap.totalSpend;
+  const pct = snap.income > 0 ? Math.round((snap.totalSpend / snap.income) * 100) : null;
+  const pctColor = pct === null ? '#aaa' : pct >= 90 ? '#c0392b' : pct >= 70 ? '#b37c00' : '#2d6a4f';
+
+  const catRows = snap.categories.map(c => {
+    const barPct = c.budget > 0 ? Math.min(100, Math.round((c.used / c.budget) * 100)) : 0;
+    return `
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+          <div style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500">
+            <div style="width:6px;height:6px;border-radius:50%;background:${c.color};flex-shrink:0"></div>
+            ${c.name}
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:12px;color:#6b6b6b">${c.used.toLocaleString('ko-KR')}원</div>
+        </div>
+        <div style="height:4px;background:#eeece8;border-radius:99px;overflow:hidden">
+          <div style="height:100%;width:${barPct}%;background:${c.color};border-radius:99px"></div>
+        </div>
+      </div>`;
+  }).join('');
+
+  const fandomRow = snap.fandomTotal > 0 ? `
+    <div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500">
+          <div style="width:6px;height:6px;border-radius:50%;background:#9b4dca;flex-shrink:0"></div>
+          ${snap.fandomName}
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:12px;color:#6b6b6b">${snap.fandomTotal.toLocaleString('ko-KR')}원</div>
+      </div>
+    </div>` : '';
+
+  const carryText = snap.newCarryover >= 0
+    ? `+${snap.newCarryover.toLocaleString('ko-KR')}원 이월`
+    : `${snap.newCarryover.toLocaleString('ko-KR')}원 차감`;
+  const carryColor = snap.newCarryover >= 0 ? '#2d6a4f' : '#c0392b';
+
+  return `
+    <div id="summaryCard" style="
+      width:320px;
+      background:#f7f6f2;
+      border-radius:20px;
+      padding:28px 24px 24px;
+      font-family:'Pretendard',-apple-system,sans-serif;
+      color:#1a1a1a;
+      position:fixed;
+      left:-9999px;
+      top:0;
+    ">
+      <!-- 헤더 -->
+      <div style="margin-bottom:22px">
+        <div style="font-size:11px;letter-spacing:0.6px;text-transform:uppercase;color:#aaa;margin-bottom:4px">Monthly Summary</div>
+        <div style="font-size:22px;font-weight:600;letter-spacing:-0.3px">${y}년 ${m}월 결산</div>
+      </div>
+
+      <!-- 수입/지출 요약 -->
+      <div style="background:#fff;border-radius:12px;border:0.5px solid rgba(0,0,0,0.09);padding:16px 18px;margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+          <div>
+            <div style="font-size:10px;color:#aaa;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:3px">수입</div>
+            <div style="font-family:'DM Mono',monospace;font-size:20px;font-weight:500;color:#2d6a4f">${snap.income > 0 ? snap.income.toLocaleString('ko-KR')+'원' : '—'}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:10px;color:#aaa;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:3px">지출</div>
+            <div style="font-family:'DM Mono',monospace;font-size:20px;font-weight:500;color:#1a1a1a">${snap.totalSpend.toLocaleString('ko-KR')}원</div>
+          </div>
+        </div>
+        ${pct !== null ? `
+        <div style="height:4px;background:#eeece8;border-radius:99px;overflow:hidden;margin-bottom:6px">
+          <div style="height:100%;width:${Math.min(100,pct)}%;background:${pctColor};border-radius:99px"></div>
+        </div>
+        <div style="font-size:11px;color:${pctColor};font-weight:500">수입의 ${pct}% 지출</div>
+        ` : ''}
+      </div>
+
+      <!-- 카테고리별 -->
+      <div style="background:#fff;border-radius:12px;border:0.5px solid rgba(0,0,0,0.09);padding:16px 18px;margin-bottom:10px">
+        <div style="font-size:11px;letter-spacing:0.5px;text-transform:uppercase;color:#aaa;margin-bottom:12px">카테고리별</div>
+        ${catRows}
+        ${fandomRow}
+        ${snap.recurTotal > 0 ? `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:0.5px solid rgba(0,0,0,0.07);margin-top:6px">
+          <div style="font-size:12px;color:#6b6b6b">정기지출</div>
+          <div style="font-family:'DM Mono',monospace;font-size:12px;color:#6b6b6b">${snap.recurTotal.toLocaleString('ko-KR')}원</div>
+        </div>` : ''}
+      </div>
+
+      <!-- 이월 -->
+      <div style="background:#fff;border-radius:12px;border:0.5px solid rgba(0,0,0,0.09);padding:14px 18px;display:flex;justify-content:space-between;align-items:center">
+        <div style="font-size:12px;color:#6b6b6b">다음 달로</div>
+        <div style="font-family:'DM Mono',monospace;font-size:15px;font-weight:500;color:${carryColor}">${carryText}</div>
+      </div>
+
+      <!-- 푸터 -->
+      <div style="margin-top:16px;font-size:10px;color:#aaa;text-align:center">소비 선택 시스템</div>
+    </div>`;
+}
+
+// 이미지로 내보내기
+async function exportSummaryImage(snap) {
+  // html2canvas 로드
+  await new Promise((resolve, reject) => {
+    if (window.html2canvas) { resolve(); return; }
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    s.onload = resolve; s.onerror = reject;
+    document.head.appendChild(s);
+  });
+
+  // 카드 DOM 삽입
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = buildSummaryHTML(snap);
+  document.body.appendChild(wrapper);
+  const card = document.getElementById('summaryCard');
+
+  try {
+    const canvas = await html2canvas(card, {
+      scale: 3,
+      backgroundColor: '#f7f6f2',
+      useCORS: true,
+      logging: false,
+    });
+    const y = Math.floor(snap.month / 100);
+    const m = String(snap.month % 100).padStart(2,'0');
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    a.download = `결산_${y}${m}.png`;
+    a.click();
+  } finally {
+    document.body.removeChild(wrapper);
+  }
+}
+
 // ─── 월 마감 ───
 function initReset(state) {
-  document.getElementById('btnReset').onclick = () => {
+  document.getElementById('btnReset').onclick = async () => {
     const rem = remaining(state);
     if (!confirm(`월 마감을 실행합니다.\n남은 금액: ${fmtSigned(rem)}\n${rem > 0 ? '이월 처리됩니다.' : '다음 달에 차감됩니다.'}\n계속하시겠어요?`)) return;
 
-    // 이월 가능 카테고리의 남은 금액 합산
+    // 1. 스냅샷 생성
+    const snap = buildSnapshot(state);
+
+    // 2. 이월 계산
     const used = usedByCategory(state);
     let carryAmt = 0;
     state.categories.forEach(c => {
-      if (c.carryover) {
-        carryAmt += (c.budget - (used[c.id] || 0));
-      }
+      if (c.carryover) carryAmt += (c.budget - (used[c.id] || 0));
     });
-    // 음수면 차감, 양수면 이월 (MAX_CARRYOVER 제한)
     const newCarry = Math.max(-MAX_CARRYOVER, Math.min(MAX_CARRYOVER, carryAmt));
+    snap.newCarryover = newCarry;
 
+    // 3. 히스토리 저장
+    const history = loadHistory();
+    const existIdx = history.findIndex(h => h.month === snap.month);
+    if (existIdx >= 0) history[existIdx] = snap;
+    else history.unshift(snap); // 최신이 앞
+    saveHistory(history);
+
+    // 4. 상태 초기화
     const now = new Date();
     const newState = {
       month: now.getFullYear() * 100 + (now.getMonth() + 1),
@@ -1972,14 +2176,123 @@ function initReset(state) {
       carryover: newCarry,
       entries: [],
     };
-    // Update state in place
     Object.assign(state, newState);
     saveState(state);
+    saveIncome({ entries: [] });
     renderAll(state);
+    renderIncomeCard();
+
+    // 5. 결산 이미지 내보내기
+    showToast('결산 이미지를 생성 중이에요...');
+    try {
+      await exportSummaryImage(snap);
+      showToast('월 마감 완료 · 결산 이미지를 저장했어요');
+    } catch(e) {
+      showToast('월 마감 완료 (이미지 생성 실패)');
+    }
   };
 }
 
-// ─── 카테고리 편집 모달 ───
+// ─── 히스토리 모달 ───
+function renderHistoryModal() {
+  const history = loadHistory();
+  const list = document.getElementById('historyList');
+  list.innerHTML = '';
+
+  if (!history.length) {
+    list.innerHTML = '<div style="text-align:center;color:#aaa;font-size:13px;padding:24px 0">아직 마감한 달이 없어요</div>';
+    return;
+  }
+
+  history.forEach(snap => {
+    const y = Math.floor(snap.month / 100);
+    const m = snap.month % 100;
+    const pct = snap.income > 0 ? Math.round((snap.totalSpend / snap.income) * 100) : null;
+    const pctColor = pct === null ? '#aaa' : pct >= 90 ? '#c0392b' : pct >= 70 ? '#b37c00' : '#2d6a4f';
+    const carryColor = snap.newCarryover >= 0 ? '#2d6a4f' : '#c0392b';
+    const carryText = snap.newCarryover >= 0
+      ? `+${snap.newCarryover.toLocaleString('ko-KR')}원 이월`
+      : `${snap.newCarryover.toLocaleString('ko-KR')}원 차감`;
+
+    const catRows = snap.categories.map(c => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:0.5px solid rgba(0,0,0,0.06)">
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px">
+          <div style="width:6px;height:6px;border-radius:50%;background:${c.color};flex-shrink:0"></div>
+          ${c.name}
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:12px;color:#6b6b6b">${c.used.toLocaleString('ko-KR')}원</div>
+      </div>`).join('');
+
+    const fandomRow = snap.fandomTotal > 0 ? `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:0.5px solid rgba(0,0,0,0.06)">
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px">
+          <div style="width:6px;height:6px;border-radius:50%;background:#9b4dca;flex-shrink:0"></div>
+          ${snap.fandomName}
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:12px;color:#6b6b6b">${snap.fandomTotal.toLocaleString('ko-KR')}원</div>
+      </div>` : '';
+
+    const card = document.createElement('div');
+    card.style.cssText = 'background:#f7f6f2;border-radius:12px;padding:16px;margin-bottom:12px';
+    card.innerHTML = `
+      <!-- 월 헤더 -->
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px">
+        <div style="font-size:16px;font-weight:600;letter-spacing:-0.3px">${y}년 ${m}월</div>
+        <button data-month="${snap.month}" class="btn-reexport" style="font-family:'Pretendard',-apple-system,sans-serif;font-size:11px;color:#6b6b6b;background:#fff;border:0.5px solid rgba(0,0,0,0.16);border-radius:20px;padding:4px 10px;cursor:pointer">이미지 다시 저장</button>
+      </div>
+      <!-- 수입/지출 -->
+      <div style="display:flex;gap:12px;margin-bottom:10px">
+        <div style="flex:1;background:#fff;border-radius:8px;padding:10px 12px">
+          <div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">수입</div>
+          <div style="font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:#2d6a4f">${snap.income > 0 ? snap.income.toLocaleString('ko-KR')+'원' : '—'}</div>
+        </div>
+        <div style="flex:1;background:#fff;border-radius:8px;padding:10px 12px">
+          <div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">지출</div>
+          <div style="font-family:'DM Mono',monospace;font-size:16px;font-weight:500">${snap.totalSpend.toLocaleString('ko-KR')}원</div>
+          ${pct !== null ? `<div style="font-size:10px;color:${pctColor};margin-top:2px">수입의 ${pct}%</div>` : ''}
+        </div>
+      </div>
+      <!-- 카테고리 -->
+      <div style="background:#fff;border-radius:8px;padding:10px 12px;margin-bottom:8px">
+        ${catRows}${fandomRow}
+        ${snap.recurTotal > 0 ? `<div style="display:flex;justify-content:space-between;padding-top:5px;font-size:12px;color:#6b6b6b"><span>정기지출</span><span style="font-family:'DM Mono',monospace">${snap.recurTotal.toLocaleString('ko-KR')}원</span></div>` : ''}
+      </div>
+      <!-- 이월 -->
+      <div style="display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:8px;padding:8px 12px">
+        <div style="font-size:12px;color:#6b6b6b">다음 달로</div>
+        <div style="font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:${carryColor}">${carryText}</div>
+      </div>`;
+
+    // 이미지 다시 저장 버튼
+    card.querySelector('.btn-reexport').onclick = async (e) => {
+      e.stopPropagation();
+      const monthKey = parseInt(e.target.dataset.month);
+      const targetSnap = loadHistory().find(h => h.month === monthKey);
+      if (!targetSnap) return;
+      showToast('이미지 생성 중...');
+      try {
+        await exportSummaryImage(targetSnap);
+        showToast('이미지를 저장했어요');
+      } catch(err) {
+        showToast('이미지 생성에 실패했어요');
+      }
+    };
+
+    list.appendChild(card);
+  });
+}
+
+function initHistory() {
+  const overlay = document.getElementById('historyOverlay');
+  document.getElementById('btnHistory').onclick = () => {
+    renderHistoryModal();
+    overlay.classList.add('open');
+  };
+  document.getElementById('historyClose').onclick = () => overlay.classList.remove('open');
+  overlay.onclick = e => { if (e.target === overlay) overlay.classList.remove('open'); };
+}
+
+
 function initCatEdit(state) {
   const overlay = document.getElementById('modalOverlay');
   const closeBtn = document.getElementById('modalClose');
@@ -2756,6 +3069,7 @@ function initBackup() {
       recur: loadRecur(),
       income: loadIncome(),
       savings: loadSavings(),
+      history: loadHistory(),
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -2788,6 +3102,7 @@ function initBackup() {
         if (data.recur)   saveRecur(data.recur);
         if (data.income)  saveIncome(data.income);
         if (data.savings) saveSavings(data.savings);
+        if (data.history) saveHistory(data.history);
         // 앱 전체 재초기화
         location.reload();
       } catch(err) {
@@ -2974,6 +3289,7 @@ function init() {
   initRecur(() => loadState());
   initIncome();
   initCollapse();
+  initHistory();
   initBackup();
 }
 
